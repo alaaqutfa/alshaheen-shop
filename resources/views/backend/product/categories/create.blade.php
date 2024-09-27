@@ -3,7 +3,7 @@
 @section('content')
 
 @php
-    CoreComponentRepository::instantiateShopRepository();
+    // CoreComponentRepository::instantiateShopRepository();
     CoreComponentRepository::initializeCache();
 @endphp
 

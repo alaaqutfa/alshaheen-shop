@@ -36,77 +36,77 @@ class BusinessSettingsController extends Controller
 
     public function general_setting(Request $request)
     {
-        CoreComponentRepository::instantiateShopRepository();
+        // CoreComponentRepository::instantiateShopRepository();
         CoreComponentRepository::initializeCache();
         return view('backend.setup_configurations.general_settings');
     }
 
     public function activation(Request $request)
     {
-        CoreComponentRepository::instantiateShopRepository();
+        // CoreComponentRepository::instantiateShopRepository();
         CoreComponentRepository::initializeCache();
         return view('backend.setup_configurations.activation');
     }
 
     public function social_login(Request $request)
     {
-        CoreComponentRepository::instantiateShopRepository();
+        // CoreComponentRepository::instantiateShopRepository();
         CoreComponentRepository::initializeCache();
         return view('backend.setup_configurations.social_login');
     }
 
     public function smtp_settings(Request $request)
     {
-        CoreComponentRepository::instantiateShopRepository();
+        // CoreComponentRepository::instantiateShopRepository();
         CoreComponentRepository::initializeCache();
         return view('backend.setup_configurations.smtp_settings');
     }
 
     public function google_analytics(Request $request)
     {
-        CoreComponentRepository::instantiateShopRepository();
+        // CoreComponentRepository::instantiateShopRepository();
         CoreComponentRepository::initializeCache();
         return view('backend.setup_configurations.google_configuration.google_analytics');
     }
 
     public function google_recaptcha(Request $request)
     {
-        CoreComponentRepository::instantiateShopRepository();
+        // CoreComponentRepository::instantiateShopRepository();
         CoreComponentRepository::initializeCache();
         return view('backend.setup_configurations.google_configuration.google_recaptcha');
     }
 
     public function google_map(Request $request)
     {
-        CoreComponentRepository::instantiateShopRepository();
+        // CoreComponentRepository::instantiateShopRepository();
         CoreComponentRepository::initializeCache();
         return view('backend.setup_configurations.google_configuration.google_map');
     }
 
     public function google_firebase(Request $request)
     {
-        CoreComponentRepository::instantiateShopRepository();
+        // CoreComponentRepository::instantiateShopRepository();
         CoreComponentRepository::initializeCache();
         return view('backend.setup_configurations.google_configuration.google_firebase');
     }
 
     public function facebook_chat(Request $request)
     {
-        CoreComponentRepository::instantiateShopRepository();
+        // CoreComponentRepository::instantiateShopRepository();
         CoreComponentRepository::initializeCache();
         return view('backend.setup_configurations.facebook_chat');
     }
 
     public function facebook_comment(Request $request)
     {
-        CoreComponentRepository::instantiateShopRepository();
+        // CoreComponentRepository::instantiateShopRepository();
         CoreComponentRepository::initializeCache();
         return view('backend.setup_configurations.facebook_configuration.facebook_comment');
     }
 
     public function payment_method(Request $request)
     {
-        CoreComponentRepository::instantiateShopRepository();
+        // CoreComponentRepository::instantiateShopRepository();
         CoreComponentRepository::initializeCache();
         $payment_methods = PaymentMethod::whereNull('addon_identifier')->get();
         return view('backend.setup_configurations.payment_method.index', compact('payment_methods'));
@@ -114,7 +114,7 @@ class BusinessSettingsController extends Controller
 
     public function file_system(Request $request)
     {
-        CoreComponentRepository::instantiateShopRepository();
+        // CoreComponentRepository::instantiateShopRepository();
         CoreComponentRepository::initializeCache();
         return view('backend.setup_configurations.file_system');
     }
