@@ -190,11 +190,11 @@ class AuthController extends Controller
                 ->first();
         }
         // if (!$delivery_boy_condition) {
-        if (!$delivery_boy_condition && !$seller_condition) {
-            if (\App\Utility\PayhereUtility::create_wallet_reference($request->identity_matrix) == false) {
-                return response()->json(['result' => false, 'message' => 'Identity matrix error', 'user' => null], 401);
-            }
-        }
+        // if (!$delivery_boy_condition && !$seller_condition) {
+        //     if (\App\Utility\PayhereUtility::create_wallet_reference($request->identity_matrix) == false) {
+        //         return response()->json(['result' => false, 'message' => 'Identity matrix error', 'user' => null], 401);
+        //     }
+        // }
 
         if ($user != null) {
             if (!$user->banned) {
