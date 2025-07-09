@@ -56,7 +56,7 @@
                 </select>
             </div>
         </div>
-        
+
         @if (get_setting('google_map') == 1)
             <div class="row">
                 <input id="edit_searchInput" class="controls" type="text" placeholder="Enter a location">
@@ -87,13 +87,13 @@
                 </div>
             </div>
         @endif
-        
-        <div class="row">
+
+        <div class="row d-none">
             <div class="col-md-2">
                 <label>{{ translate('Postal code')}}</label>
             </div>
             <div class="col-md-10">
-                <input type="text" class="form-control mb-3" placeholder="{{ translate('Your Postal Code')}}" value="{{ $address_data->postal_code }}" name="postal_code" value="" required>
+                <input type="hidden" class="form-control mb-3" placeholder="{{ translate('Your Postal Code')}}" value="{{ $address_data->postal_code }}" name="postal_code" value="0">
             </div>
         </div>
         <div class="row">

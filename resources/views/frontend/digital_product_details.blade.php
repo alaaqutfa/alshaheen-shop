@@ -453,13 +453,13 @@
                                                 target="_blank">
                                                 <i class="lab la-google opacity-60"></i>
                                             </a>
-                                        </li>
+                                        {{-- </li>
                                         <li class="list-inline-item mr-2">
                                             <a href="{{ $detailedProduct->user->shop->twitter }}" class="twitter"
                                                 target="_blank">
                                                 <i class="lab la-twitter opacity-60"></i>
                                             </a>
-                                        </li>
+                                        </li> --}}
                                         <li class="list-inline-item">
                                             <a href="{{ $detailedProduct->user->shop->youtube }}" class="youtube"
                                                 target="_blank">
@@ -896,13 +896,13 @@
                                         </a>
                                     </li>
                                 @endif
-                                @if (get_setting('twitter_login') == 1)
+                                {{-- @if (get_setting('twitter_login') == 1)
                                     <li class="list-inline-item">
                                         <a href="{{ route('social.login', ['provider' => 'twitter']) }}" class="twitter">
                                             <i class="lab la-twitter"></i>
                                         </a>
                                     </li>
-                                @endif
+                                @endif --}}
                                 @if (get_setting('apple_login') == 1)
                                     <li class="list-inline-item">
                                         <a href="{{ route('social.login', ['provider' => 'apple']) }}" class="apple">
@@ -925,7 +925,7 @@
     		$('#share').share({
     			showLabel: false,
                 showCount: false,
-                shares: ["email", "twitter", "facebook", "linkedin", "pinterest", "stumbleupon", "whatsapp"]
+                shares: ["email", "facebook", "linkedin", "pinterest", "stumbleupon", "whatsapp"]
     		});
     	});
 

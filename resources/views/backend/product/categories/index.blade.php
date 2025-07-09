@@ -4,7 +4,7 @@
 
 @php
     // CoreComponentRepository::instantiateShopRepository();
-    CoreComponentRepository::initializeCache();
+    // CoreComponentRepository::initializeCache();
 @endphp
 
 <div class="aiz-titlebar text-left mt-2 mb-3">
@@ -44,6 +44,7 @@
                     <th data-breakpoints="lg">{{translate('Banner')}}</th>
                     <th data-breakpoints="lg">{{translate('Icon')}}</th>
                     <th data-breakpoints="lg">{{translate('Cover Image')}}</th>
+                    <th data-breakpoints="lg">{{translate('Active')}}</th>
                     <th data-breakpoints="lg">{{translate('Featured')}}</th>
                     <th data-breakpoints="lg">{{translate('Commission')}}</th>
                     <th width="10%" class="text-right">{{translate('Options')}}</th>
@@ -95,6 +96,16 @@
                             @endif
                         </td>
                         <td>
+                            {{-- @php
+                                $category_products_count = get_count_product_in_category($category->id);
+                                $activate_category = activate_category($category->id,$category_products_count);
+                            @endphp --}}
+                            <label class="aiz-switch aiz-switch-success mb-0">
+                                <input type="checkbox" onchange="update_active(this)" value="{{ $category->id }}" <?php if($category->active == 1) echo "checked disabled";?>>
+                                <span></span>
+                            </label>
+                        </td>
+                        <td>
                             <label class="aiz-switch aiz-switch-success mb-0">
                                 <input type="checkbox" onchange="update_featured(this)" value="{{ $category->id }}" <?php if($category->featured == 1) echo "checked";?>>
                                 <span></span>
@@ -132,10 +143,10 @@
 
 @section('script')
     <script type="text/javascript">
-        function update_featured(el){
+        function update_active(el){
 
             if('{{env('DEMO_MODE')}}' == 'On'){
-                AIZ.plugins.notify('info', '{{ translate('Data can not change in demo mode.') }}');
+                AIZ.plugins.notify('info', '{{ translate("Data can not change in demo mode.") }}');
                 return;
             }
 
@@ -145,12 +156,34 @@
             else{
                 var status = 0;
             }
-            $.post('{{ route('categories.featured') }}', {_token:'{{ csrf_token() }}', id:el.value, status:status}, function(data){
+            $.post('{{ route("categories.activated") }}', {_token:'{{ csrf_token() }}', id:el.value, status:status}, function(data){
                 if(data == 1){
-                    AIZ.plugins.notify('success', '{{ translate('Featured categories updated successfully') }}');
+                    AIZ.plugins.notify('success', '{{ translate("Activated categories updated successfully") }}');
                 }
                 else{
-                    AIZ.plugins.notify('danger', '{{ translate('Something went wrong') }}');
+                    AIZ.plugins.notify('danger', '{{ translate("Something went wrong") }}');
+                }
+            });
+        }
+        function update_featured(el){
+
+            if('{{env('DEMO_MODE')}}' == 'On'){
+                AIZ.plugins.notify('info', '{{ translate("Data can not change in demo mode.") }}');
+                return;
+            }
+
+            if(el.checked){
+                var status = 1;
+            }
+            else{
+                var status = 0;
+            }
+            $.post('{{ route("categories.featured") }}', {_token:'{{ csrf_token() }}', id:el.value, status:status}, function(data){
+                if(data == 1){
+                    AIZ.plugins.notify('success', '{{ translate("Featured categories updated successfully") }}');
+                }
+                else{
+                    AIZ.plugins.notify('danger', '{{ translate("Something went wrong") }}');
                 }
             });
         }

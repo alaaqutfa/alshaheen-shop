@@ -10,10 +10,13 @@ use App\Models\User;
 use App\Utility\CategoryUtility;
 use Illuminate\Support\Str;
 use Cache;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 
 class CategoryController extends Controller
 {
     public function __construct() {
+
         // Staff Permission Check
         $this->middleware(['permission:view_product_categories'])->only('index');
         $this->middleware(['permission:add_product_category'])->only('create');
@@ -26,7 +29,7 @@ class CategoryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index(Request $request): View
     {
         $sort_search =null;
         $categories = Category::orderBy('order_level', 'desc');
@@ -43,7 +46,7 @@ class CategoryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(): View
     {
         $categories = Category::where('parent_id', 0)
             ->where('digital', 0)
@@ -109,10 +112,10 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
-    {
-        //
-    }
+    // public function show($id)
+    // {
+    //     //
+    // }
 
     /**
      * Show the form for editing the specified resource.
@@ -120,7 +123,7 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(Request $request, $id)
+    public function edit(Request $request, $id): View
     {
         $lang = $request->lang;
         $category = Category::findOrFail($id);
@@ -145,7 +148,7 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $id): RedirectResponse
     {
         $category = Category::findOrFail($id);
         if($request->lang == env("DEFAULT_LANGUAGE")){
@@ -235,6 +238,15 @@ class CategoryController extends Controller
 
         flash(translate('Category has been deleted successfully'))->success();
         return redirect()->route('categories.index');
+    }
+
+    public function updateActivated(Request $request)
+    {
+        $category = Category::findOrFail($request->id);
+        $category->active = $request->status;
+        $category->save();
+        Cache::forget('featured_categories');
+        return 1;
     }
 
     public function updateFeatured(Request $request)

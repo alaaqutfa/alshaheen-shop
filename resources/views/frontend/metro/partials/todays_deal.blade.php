@@ -9,15 +9,15 @@
             <!-- Banner -->
             @if ($todays_deal_banner != null || $todays_deal_banner_small != null)
                 <div class="overflow-hidden d-none d-md-block">
-                    <img src="{{ static_asset('assets/img/placeholder-rect.jpg') }}" 
-                        data-src="{{ uploaded_asset($todays_deal_banner) }}" 
-                        alt="{{ env('APP_NAME') }} promo" class="lazyload img-fit h-100 has-transition" 
+                    <img src="{{ static_asset('assets/img/placeholder-rect.jpg') }}"
+                        data-src="{{ uploaded_asset($todays_deal_banner) }}"
+                        alt="{{ env('APP_NAME') }} promo" class="lazyload img-fit h-100 has-transition"
                         onerror="this.onerror=null;this.src='{{ static_asset('assets/img/placeholder-rect.jpg') }}';">
                 </div>
                 <div class="overflow-hidden d-md-none">
-                    <img src="{{ static_asset('assets/img/placeholder-rect.jpg') }}" 
-                        data-src="{{ $todays_deal_banner_small != null ? uploaded_asset($todays_deal_banner_small) : uploaded_asset($todays_deal_banner) }}" 
-                        alt="{{ env('APP_NAME') }} promo" class="lazyload img-fit h-100 has-transition" 
+                    <img src="{{ static_asset('assets/img/placeholder-rect.jpg') }}"
+                        data-src="{{ $todays_deal_banner_small != null ? uploaded_asset($todays_deal_banner_small) : uploaded_asset($todays_deal_banner) }}"
+                        alt="{{ env('APP_NAME') }} promo" class="lazyload img-fit h-100 has-transition"
                         onerror="this.onerror=null;this.src='{{ static_asset('assets/img/placeholder-rect.jpg') }}';">
                 </div>
             @endif
@@ -36,8 +36,9 @@
                                 <div class="carousel-box h-100 px-3 px-lg-0">
                                     <a href="{{ route('product', $product->slug) }}" class="h-100 overflow-hidden hov-scale-img mx-auto" title="{{  $product->getTranslation('name')  }}">
                                         <!-- Image -->
-                                        <div class="img h-80px w-80px rounded-content overflow-hidden mx-auto">
+                                        <div class="d-flex justify-content-center align-items-center img h-80px w-80px rounded-content overflow-hidden mx-auto" style="background: #f0f0f0;">
                                             <img class="lazyload img-fit m-auto has-transition"
+                                                style="object-fit: contain !important;"
                                                 src="{{ static_asset('assets/img/placeholder.jpg') }}"
                                                 data-src="{{ get_image($product->thumbnail) }}"
                                                 alt="{{ $product->getTranslation('name') }}"

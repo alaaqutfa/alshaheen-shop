@@ -37,77 +37,77 @@ class BusinessSettingsController extends Controller
     public function general_setting(Request $request)
     {
         // CoreComponentRepository::instantiateShopRepository();
-        CoreComponentRepository::initializeCache();
+        // // CoreComponentRepository::initializeCache();
         return view('backend.setup_configurations.general_settings');
     }
 
     public function activation(Request $request)
     {
         // CoreComponentRepository::instantiateShopRepository();
-        CoreComponentRepository::initializeCache();
+        // CoreComponentRepository::initializeCache();
         return view('backend.setup_configurations.activation');
     }
 
     public function social_login(Request $request)
     {
         // CoreComponentRepository::instantiateShopRepository();
-        CoreComponentRepository::initializeCache();
+        // CoreComponentRepository::initializeCache();
         return view('backend.setup_configurations.social_login');
     }
 
     public function smtp_settings(Request $request)
     {
         // CoreComponentRepository::instantiateShopRepository();
-        CoreComponentRepository::initializeCache();
+        // CoreComponentRepository::initializeCache();
         return view('backend.setup_configurations.smtp_settings');
     }
 
     public function google_analytics(Request $request)
     {
         // CoreComponentRepository::instantiateShopRepository();
-        CoreComponentRepository::initializeCache();
+        // CoreComponentRepository::initializeCache();
         return view('backend.setup_configurations.google_configuration.google_analytics');
     }
 
     public function google_recaptcha(Request $request)
     {
         // CoreComponentRepository::instantiateShopRepository();
-        CoreComponentRepository::initializeCache();
+        // CoreComponentRepository::initializeCache();
         return view('backend.setup_configurations.google_configuration.google_recaptcha');
     }
 
     public function google_map(Request $request)
     {
         // CoreComponentRepository::instantiateShopRepository();
-        CoreComponentRepository::initializeCache();
+        // CoreComponentRepository::initializeCache();
         return view('backend.setup_configurations.google_configuration.google_map');
     }
 
     public function google_firebase(Request $request)
     {
         // CoreComponentRepository::instantiateShopRepository();
-        CoreComponentRepository::initializeCache();
+        // CoreComponentRepository::initializeCache();
         return view('backend.setup_configurations.google_configuration.google_firebase');
     }
 
     public function facebook_chat(Request $request)
     {
         // CoreComponentRepository::instantiateShopRepository();
-        CoreComponentRepository::initializeCache();
+        // CoreComponentRepository::initializeCache();
         return view('backend.setup_configurations.facebook_chat');
     }
 
     public function facebook_comment(Request $request)
     {
         // CoreComponentRepository::instantiateShopRepository();
-        CoreComponentRepository::initializeCache();
+        // CoreComponentRepository::initializeCache();
         return view('backend.setup_configurations.facebook_configuration.facebook_comment');
     }
 
     public function payment_method(Request $request)
     {
         // CoreComponentRepository::instantiateShopRepository();
-        CoreComponentRepository::initializeCache();
+        // CoreComponentRepository::initializeCache();
         $payment_methods = PaymentMethod::whereNull('addon_identifier')->get();
         return view('backend.setup_configurations.payment_method.index', compact('payment_methods'));
     }
@@ -115,7 +115,6 @@ class BusinessSettingsController extends Controller
     public function file_system(Request $request)
     {
         // CoreComponentRepository::instantiateShopRepository();
-        CoreComponentRepository::initializeCache();
         return view('backend.setup_configurations.file_system');
     }
 
@@ -441,7 +440,7 @@ class BusinessSettingsController extends Controller
 
     public function updateActivationSettings(Request $request)
     {
-        $env_changes = ['FORCE_HTTPS', 'FILESYSTEM_DRIVER','MANUAL_PAYMENT'];
+        $env_changes = ['FORCE_HTTPS', 'FILESYSTEM_DRIVER'];
         if (in_array($request->type, $env_changes)) {
 
             return $this->updateActivationSettingsInEnv($request);
@@ -494,7 +493,7 @@ class BusinessSettingsController extends Controller
             if (strpos(env('APP_URL'), 'https:') !== FALSE) {
                 $this->overWriteEnvFile('APP_URL', str_replace("https:", "http:", env('APP_URL')));
             }
-        } else {
+        } elseif ($request->type == 'FILESYSTEM_DRIVER') {
             $this->overWriteEnvFile($request->type, $request->value);
         }
 

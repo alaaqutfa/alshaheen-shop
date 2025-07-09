@@ -20,6 +20,20 @@
         <div class="col-lg-6">
             <div class="card">
                 <div class="card-header">
+                    <h3 class="mb-0 h6 text-center">{{translate('Management commission calculated directly in case of paid or unpaid order')}}</h3>
+                </div>
+                <div class="card-body text-center">
+                    <label class="aiz-switch aiz-switch-success mb-0">
+                        <input type="checkbox" onchange="updateSettings(this, 'just_calculate_commission_activation')" <?php if(get_setting('just_calculate_commission_activation') == 1) echo "checked";?>>
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header">
                     <h3 class="mb-0 h6 text-center">{{translate('Category Based Commission')}}</h3>
                 </div>
                 <div class="card-body text-center">

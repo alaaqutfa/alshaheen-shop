@@ -9,6 +9,7 @@ use App\Models\ProductTax;
 use App\Models\ProductTranslation;
 use App\Models\Upload;
 use App\Models\User;
+use App\Models\Shop;
 use App\Notifications\ShopProductNotification;
 use App\Services\ProductService;
 use App\Services\ProductStockService;
@@ -39,6 +40,9 @@ class DigitalProductController  extends Controller
      */
     public function create()
     {
+        $userId = auth()->id();
+        $shop = Shop::where('user_id', $userId)->first();
+
         if (addon_is_activated('seller_subscription')) {
             if (!seller_package_validity_check()) {
                 flash(translate('Please upgrade your package.'))->warning();
@@ -47,6 +51,7 @@ class DigitalProductController  extends Controller
         }
         $categories = Category::where('parent_id', 0)
             ->where('digital', 1)
+            ->where('id', $shop->type_value)
             ->with('childrenCategories')
             ->get();
         return view('seller.product.digitalproducts.create', compact('categories'));
@@ -84,8 +89,9 @@ class DigitalProductController  extends Controller
 
         //VAT & Tax
         if ($request->tax_id) {
+
             (new ProductTaxService)->store($request->only([
-                'tax_id', 'tax', 'tax_type', 'product_id'
+                'tax_id', 'tax_value', 'tax_types', 'product_id'
             ]));
         }
 
@@ -125,7 +131,12 @@ class DigitalProductController  extends Controller
      */
     public function edit(Request $request, $id)
     {
-        $categories = Category::where('digital', 1)->get();
+        $userId = auth()->id();
+        $shop = Shop::where('user_id', $userId)->first();
+
+        $categories = Category::where('digital', 1)
+        ->where('id', $shop->type_value)
+        ->get();
         $lang = $request->lang;
         $product = Product::find($id);
         return view('seller.product.digitalproducts.edit', compact('categories', 'product', 'lang'));
@@ -164,7 +175,7 @@ class DigitalProductController  extends Controller
         if ($request->tax_id) {
             ProductTax::where('product_id', $product->id)->delete();
             (new ProductTaxService)->store($request->only([
-                'tax_id', 'tax', 'tax_type', 'product_id'
+                'tax_id', 'tax_value', 'tax_types', 'product_id'
             ]));
         }
 

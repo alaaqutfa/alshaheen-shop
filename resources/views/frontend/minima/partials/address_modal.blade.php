@@ -95,14 +95,14 @@
                                 </div>
                             </div>
                         @endif
-                        
+
                         <!-- Postal code -->
-                        <div class="row">
+                        <div class="row d-none">
                             <div class="col-md-2">
                                 <label>{{ translate('Postal code')}}</label>
                             </div>
                             <div class="col-md-10">
-                                <input type="text" class="form-control mb-3 rounded-0" placeholder="{{ translate('Your Postal Code')}}" name="postal_code" value="" required>
+                                <input type="hidden" class="form-control mb-3 rounded-0" placeholder="{{ translate('Your Postal Code')}}" name="postal_code" value="0">
                             </div>
                         </div>
 
@@ -136,7 +136,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            
+
             <div class="modal-body c-scrollbar-light" id="edit_modal_body">
 
             </div>
@@ -153,7 +153,7 @@
         function edit_address(address) {
             var url = '{{ route("addresses.edit", ":id") }}';
             url = url.replace(':id', address);
-            
+
             $.ajax({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -179,7 +179,7 @@
                 }
             });
         }
-        
+
         $(document).on('change', '[name=country_id]', function() {
             var country_id = $(this).val();
             get_states(country_id);
@@ -189,7 +189,7 @@
             var state_id = $(this).val();
             get_city(state_id);
         });
-        
+
         function get_states(country_id) {
             $('[name="state"]').html("");
             $.ajax({
@@ -233,7 +233,7 @@
         }
     </script>
 
-    
+
     @if (get_setting('google_map') == 1)
         @include('frontend.'.get_setting('homepage_select').'.partials.google_map')
     @endif

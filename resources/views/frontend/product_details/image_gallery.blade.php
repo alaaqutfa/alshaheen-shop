@@ -7,15 +7,17 @@
             $photos = explode(',', $detailedProduct->photos);
         @endphp
     @endif
+
     <!-- Gallery Images -->
     <div class="col-12">
         <div class="aiz-carousel product-gallery arrow-inactive-transparent arrow-lg-none"
             data-nav-for='.product-gallery-thumb' data-fade='true' data-auto-height='true' data-arrows='true'>
+
             @if ($detailedProduct->digital == 0)
                 @foreach ($detailedProduct->stocks as $key => $stock)
                     @if ($stock->image != null)
                         <div class="carousel-box img-zoom rounded-0">
-                            <img class="img-fluid h-auto lazyload mx-auto"
+                            <img class="img-fluid lazyload mx-auto fixed-size" style="object-fit: contain !important;"
                                 src="{{ static_asset('assets/img/placeholder.jpg') }}"
                                 data-src="{{ uploaded_asset($stock->image) }}"
                                 onerror="this.onerror=null;this.src='{{ static_asset('assets/img/placeholder.jpg') }}';">
@@ -26,7 +28,7 @@
 
             @foreach ($photos as $key => $photo)
                 <div class="carousel-box img-zoom rounded-0">
-                    <img class="img-fluid h-auto lazyload mx-auto"
+                    <img class="img-fluid lazyload mx-auto fixed-size" style="object-fit: contain !important;"
                         src="{{ static_asset('assets/img/placeholder.jpg') }}" data-src="{{ uploaded_asset($photo) }}"
                         onerror="this.onerror=null;this.src='{{ static_asset('assets/img/placeholder.jpg') }}';">
                 </div>
@@ -34,16 +36,19 @@
 
         </div>
     </div>
+
     <!-- Thumbnail Images -->
     <div class="col-12 mt-3 d-none d-lg-block">
-        <div class="aiz-carousel half-outside-arrow product-gallery-thumb" data-items='7' data-nav-for='.product-gallery'
-            data-focus-select='true' data-arrows='true' data-vertical='false' data-auto-height='true'>
+        <div class="aiz-carousel half-outside-arrow product-gallery-thumb" data-items='7'
+            data-nav-for='.product-gallery' data-focus-select='true' data-arrows='true' data-vertical='false'
+            data-auto-height='true'>
 
             @if ($detailedProduct->digital == 0)
                 @foreach ($detailedProduct->stocks as $key => $stock)
                     @if ($stock->image != null)
                         <div class="carousel-box c-pointer rounded-0" data-variation="{{ $stock->variant }}">
-                            <img class="lazyload mw-100 size-60px mx-auto border p-1"
+                            <img class="lazyload fixed-thumbnail mw-100 mx-auto border p-1"
+                                style="object-fit: contain !important;"
                                 src="{{ static_asset('assets/img/placeholder.jpg') }}"
                                 data-src="{{ uploaded_asset($stock->image) }}"
                                 onerror="this.onerror=null;this.src='{{ static_asset('assets/img/placeholder.jpg') }}';">
@@ -54,14 +59,27 @@
 
             @foreach ($photos as $key => $photo)
                 <div class="carousel-box c-pointer rounded-0">
-                    <img class="lazyload mw-100 size-60px mx-auto border p-1"
-                        src="{{ static_asset('assets/img/placeholder.jpg') }}" data-src="{{ uploaded_asset($photo) }}"
+                    <img class="lazyload fixed-thumbnail mw-100 mx-auto border p-1"
+                        style="object-fit: contain !important;" src="{{ static_asset('assets/img/placeholder.jpg') }}"
+                        data-src="{{ uploaded_asset($photo) }}"
                         onerror="this.onerror=null;this.src='{{ static_asset('assets/img/placeholder.jpg') }}';">
                 </div>
             @endforeach
 
         </div>
     </div>
-
-
 </div>
+
+<style>
+    .fixed-size {
+        width: 100%;
+        height: 400px;
+        object-fit: cover;
+    }
+
+    .fixed-thumbnail {
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+    }
+</style>

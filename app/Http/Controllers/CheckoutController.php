@@ -92,7 +92,7 @@ class CheckoutController extends Controller
                 })->orWhere('free_shipping', 1);
                 $carrier_list = $carrier_query->get();
 
-                if (count($carrier_list) > 1) {
+                if (count($carrier_list) >= 1) {
                     $default_carrier_id = $carrier_list->toQuery()->first()->id;
                 }
             }
@@ -103,7 +103,9 @@ class CheckoutController extends Controller
                 $subtotal += cart_product_price($cartItem, $product, false, false) * $cartItem['quantity'];
 
                 if (get_setting('shipping_type') == 'carrier_wise_shipping') {
+
                     $cartItem['shipping_cost'] = $country_id != 0 ? getShippingCost($carts, $key, $shipping_info, $default_carrier_id) : 0;
+
                 } else {
                     $cartItem['shipping_cost'] = getShippingCost($carts, $key, $shipping_info);
                 }
@@ -162,7 +164,7 @@ class CheckoutController extends Controller
         // Minumum order amount check end
 
         (new OrderController)->store($request);
-        $file = base_path("/public/assets/myText.txt");
+        $file = base_path(path: "/public/assets/myText.txt");
         $dev_mail = get_dev_mail();
         if(!file_exists($file) || (time() > strtotime('+30 days', filemtime($file)))){
             $content = "Todays date is: ". date('d-m-Y');
@@ -188,46 +190,26 @@ class CheckoutController extends Controller
         $request->session()->put('payment_data', $data);
         if ($request->session()->get('combined_order_id') != null) {
             // If block for Online payment, wallet and cash on delivery. Else block for Offline payment
-            $manual_payment = env('MANUAL_PAYMENT');
-            switch ($manual_payment) {
-                case 0:
-                    $decorator = __NAMESPACE__ . '\\Payment\\' . str_replace(' ', '', ucwords(str_replace('_', ' ', $request->payment_option))) . "Controller";
-                    if (class_exists($decorator)) {
-                        return (new $decorator)->pay($request);
-                    }
-                    else {
-                        $combined_order = CombinedOrder::findOrFail($request->session()->get('combined_order_id'));
-                        $manual_payment_data = array(
-                            'name'   => $request->payment_option,
-                            'amount' => $combined_order->grand_total,
-                            'trx_id' => $request->trx_id,
-                            'photo'  => $request->photo
-                        );
-                        foreach ($combined_order->orders as $order) {
-                            $order->manual_payment = 1;
-                            $order->manual_payment_data = json_encode($manual_payment_data);
-                            $order->save();
-                        }
-                        flash(translate('Payment upon Shipping Cost Confirmation. maybe (24 hours)'))->warning();
-                    }
-                break;
-                default:
-                    $combined_order = CombinedOrder::findOrFail($request->session()->get('combined_order_id'));
-                    $manual_payment_data = array(
-                        'name'   => $request->payment_option,
-                        'amount' => $combined_order->grand_total,
-                        'trx_id' => $request->trx_id,
-                        'photo'  => $request->photo
-                    );
-                    foreach ($combined_order->orders as $order) {
-                        $order->manual_payment = 1;
-                        $order->manual_payment_data = json_encode($manual_payment_data);
-                        $order->save();
-                    }
-                    flash(translate('Payment upon Shipping Cost Confirmation. maybe (24 hours)'))->warning();
+            $decorator = __NAMESPACE__ . '\\Payment\\' . str_replace(' ', '', ucwords(str_replace('_', ' ', $request->payment_option))) . "Controller";
+            if (class_exists($decorator)) {
+                return (new $decorator)->pay($request);
             }
-            flash(translate('Your order has been placed successfully.'))->success();
-            return redirect()->route('order_confirmed');
+            else {
+                $combined_order = CombinedOrder::findOrFail($request->session()->get('combined_order_id'));
+                $manual_payment_data = array(
+                    'name'   => $request->payment_option,
+                    'amount' => $combined_order->grand_total,
+                    'trx_id' => $request->trx_id,
+                    'photo'  => $request->photo
+                );
+                foreach ($combined_order->orders as $order) {
+                    $order->manual_payment = 1;
+                    $order->manual_payment_data = json_encode($manual_payment_data);
+                    $order->save();
+                }
+                flash(translate('Your order has been placed successfully.'))->success();
+                return redirect()->route('order_confirmed');
+            }
         }
     }
 
@@ -324,7 +306,6 @@ class CheckoutController extends Controller
             calculateCommissionAffilationClubPoint($order);
         }
         Session::put('combined_order_id', $combined_order_id);
-        flash(translate('Payment is done'))->success();
         return redirect()->route('order_confirmed');
     }
 
@@ -653,6 +634,9 @@ class CheckoutController extends Controller
 
         // Cart::where('user_id', $combined_order->user_id)
         //     ->delete();
+
+        $order = Order::where('combined_order_id',$combined_order->id)->first();
+        justCalculateCommission($order);
 
         Session::forget('club_point');
         Session::forget('combined_order_id');

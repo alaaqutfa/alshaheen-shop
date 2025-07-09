@@ -16,15 +16,15 @@ class EnsureSystemKey
      */
     public function handle(Request $request, Closure $next)
     {
-        // if (
-        //     !$request->header('System-Key') ||
-        //     $request->header('System-Key') !== config('app.system_key')
-        // ) {
-            // return response()->json([
-            //     'result' => false,
-            //     'message' => 'Request not found!'
-            // ]);
-        // }
+        if (
+            !$request->header('System-Key') ||
+            $request->header('System-Key') !== config('app.system_key')
+        ) {
+            return response()->json([
+                'result' => false,
+                'message' => 'Request not found!'
+            ]);
+        }
 
         return $next($request);
     }

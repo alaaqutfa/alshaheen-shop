@@ -1,6 +1,10 @@
 <?php
 
 use App\Http\Controllers\AizUploadController;
+use App\Http\Controllers\SellerRequestController;
+use App\Http\Controllers\Seller\SellerReqController;
+use App\Http\Controllers\Seller\ProductController;
+use App\Http\Controllers\Seller\DashboardController;
 
 //Upload
 Route::group(['prefix' => 'seller', 'middleware' => ['seller', 'verified', 'user', 'prevent-back-history'], 'as' => 'seller.'], function () {
@@ -96,6 +100,14 @@ Route::group(['namespace' => 'App\Http\Controllers\Seller', 'prefix' => 'seller'
         Route::post('/shop/update', 'update')->name('shop.update');
         Route::get('/shop/apply-for-verification', 'verify_form')->name('shop.verify');
         Route::post('/shop/verification_info_store', 'verify_form_store')->name('shop.verify.store');
+    });
+
+    //Customer Request
+    Route::controller(SellerReqController::class)->group(function () {
+        Route::get('/requests', 'index')->name('request.index');
+        Route::post('/requests', 'store')->name('request.store');
+        Route::get('/request', 'create')->name('request.create');
+        Route::get('/requests/{id}', 'destroy')->name('request.destroy');
     });
 
     //Payments

@@ -550,108 +550,108 @@
     @endif
 
     <!-- Top Sellers -->
-    <!--@if (get_setting('vendor_system_activation') == 1)-->
-    <!--    @php-->
-    <!--        $best_selers = get_best_sellers(6);-->
-    <!--        $sellers_section_bg = get_setting('sellers_section_bg_color');-->
-    <!--    @endphp-->
-    <!--    @if (count($best_selers) > 0)-->
-    <!--    <section class="mb-2 mb-md-3 mt-2 mt-md-3">-->
-    <!--        <div class="container">-->
-    <!--            <div class="p-3 p-md-2rem rounded-2 @if(get_setting('sellers_section_outline') == 1) border @endif"-->
-    <!--                style="background: {{ $sellers_section_bg != null ? $sellers_section_bg : '#fff9ed' }}; border-color: {{ get_setting('sellers_section_outline_color') }} !important; padding-bottom: 1rem !important;">-->
+    @if (get_setting('vendor_system_activation') == 1)
+        @php
+            $best_selers = get_best_sellers(6);
+            $sellers_section_bg = get_setting('sellers_section_bg_color');
+        @endphp
+        @if (count($best_selers) > 0)
+        <section class="mb-2 mb-md-3 mt-2 mt-md-3">
+            <div class="container">
+                <div class="p-3 p-md-2rem rounded-2 @if(get_setting('sellers_section_outline') == 1) border @endif"
+                    style="background: {{ $sellers_section_bg != null ? $sellers_section_bg : '#fff9ed' }}; border-color: {{ get_setting('sellers_section_outline_color') }} !important; padding-bottom: 1rem !important;">
                     <!-- Top Section -->
-    <!--                <div class="d-flex mb-2 mb-md-3 align-items-baseline justify-content-between">-->
+                    <div class="d-flex mb-2 mb-md-3 align-items-baseline justify-content-between">
                         <!-- Title -->
-    <!--                    <h3 class="fs-16 fs-md-20 fw-700 mb-2 mb-sm-0">-->
-    <!--                        <span class="pb-3">{{ translate('Top Sellers') }}</span>-->
-    <!--                    </h3>-->
+                        <h3 class="fs-16 fs-md-20 fw-700 mb-2 mb-sm-0">
+                            <span class="pb-3">{{ translate('Top Sellers') }}</span>
+                        </h3>
                         <!-- Links -->
-    <!--                    <div class="d-flex">-->
-    <!--                        <a class="text-blue fs-10 fs-md-12 fw-700 hov-text-primary animate-underline-primary"-->
-    <!--                            href="{{ route('sellers') }}">{{ translate('View All Sellers') }}</a>-->
-    <!--                    </div>-->
-    <!--                </div>-->
+                        <div class="d-flex">
+                            <a class="text-blue fs-10 fs-md-12 fw-700 hov-text-primary animate-underline-primary"
+                                href="{{ route('sellers') }}">{{ translate('View All Sellers') }}</a>
+                        </div>
+                    </div>
                     <!-- Sellers Section -->
-    <!--                <div class="row gutters-16">-->
-    <!--                    @foreach ($best_selers as $key => $seller)-->
-    <!--                    <div class="col-xl-4 col-md-6 py-3 py-md-4 has-transition hov-shadow-out z-1">-->
-    <!--                        <div class="d-flex align-items-center">-->
+                    <div class="row gutters-16">
+                        @foreach ($best_selers as $key => $seller)
+                        <div class="col-xl-4 col-md-6 py-3 py-md-4 has-transition hov-shadow-out z-1">
+                            <div class="d-flex align-items-center">
                                 <!-- Shop logo & Verification Status -->
-    <!--                            <div class="position-relative">-->
-    <!--                                <a href="{{ route('shop.visit', $seller->slug) }}"-->
-    <!--                                    class="d-block mx-auto size-100px size-lg-120px border overflow-hidden hov-scale-img"-->
-    <!--                                    tabindex="0"-->
-    <!--                                    style="border: 1px solid #e5e5e5; border-radius: 50%; box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.06);">-->
-    <!--                                    <img src="{{ static_asset('assets/img/placeholder-rect.jpg') }}"-->
-    <!--                                        data-src="{{ uploaded_asset($seller->logo) }}" alt="{{ $seller->name }}"-->
-    <!--                                        class="img-fit h-100 lazyload has-transition"-->
-    <!--                                        onerror="this.onerror=null;this.src='{{ static_asset('assets/img/placeholder-rect.jpg') }}';">-->
-    <!--                                </a>-->
-    <!--                                <div class="absolute-top-left z-1 ml-2 mt-1 rounded-content bg-white">-->
-    <!--                                    @if ($seller->verification_status == 1)-->
-    <!--                                        <svg xmlns="http://www.w3.org/2000/svg" width="24.001" height="24"-->
-    <!--                                            viewBox="0 0 24.001 24">-->
-    <!--                                            <g id="Group_25929" data-name="Group 25929"-->
-    <!--                                                transform="translate(-480 -345)">-->
-    <!--                                                <circle id="Ellipse_637" data-name="Ellipse 637" cx="12"-->
-    <!--                                                    cy="12" r="12" transform="translate(480 345)"-->
-    <!--                                                    fill="#fff" />-->
-    <!--                                                <g id="Group_25927" data-name="Group 25927"-->
-    <!--                                                    transform="translate(480 345)">-->
-    <!--                                                    <path id="Union_5" data-name="Union 5"-->
-    <!--                                                        d="M0,12A12,12,0,1,1,12,24,12,12,0,0,1,0,12Zm1.2,0A10.8,10.8,0,1,0,12,1.2,10.812,10.812,0,0,0,1.2,12Zm1.2,0A9.6,9.6,0,1,1,12,21.6,9.611,9.611,0,0,1,2.4,12Zm5.115-1.244a1.083,1.083,0,0,0,0,1.529l3.059,3.059a1.081,1.081,0,0,0,1.529,0l5.1-5.1a1.084,1.084,0,0,0,0-1.53,1.081,1.081,0,0,0-1.529,0L11.339,13.05,9.045,10.756a1.082,1.082,0,0,0-1.53,0Z"-->
-    <!--                                                        transform="translate(0 0)" fill="#85b567" />-->
-    <!--                                                </g>-->
-    <!--                                            </g>-->
-    <!--                                        </svg>-->
-    <!--                                    @else-->
-    <!--                                        <svg xmlns="http://www.w3.org/2000/svg" width="24.001" height="24"-->
-    <!--                                            viewBox="0 0 24.001 24">-->
-    <!--                                            <g id="Group_25929" data-name="Group 25929"-->
-    <!--                                                transform="translate(-480 -345)">-->
-    <!--                                                <circle id="Ellipse_637" data-name="Ellipse 637" cx="12"-->
-    <!--                                                    cy="12" r="12" transform="translate(480 345)"-->
-    <!--                                                    fill="#fff" />-->
-    <!--                                                <g id="Group_25927" data-name="Group 25927"-->
-    <!--                                                    transform="translate(480 345)">-->
-    <!--                                                    <path id="Union_5" data-name="Union 5"-->
-    <!--                                                        d="M0,12A12,12,0,1,1,12,24,12,12,0,0,1,0,12Zm1.2,0A10.8,10.8,0,1,0,12,1.2,10.812,10.812,0,0,0,1.2,12Zm1.2,0A9.6,9.6,0,1,1,12,21.6,9.611,9.611,0,0,1,2.4,12Zm5.115-1.244a1.083,1.083,0,0,0,0,1.529l3.059,3.059a1.081,1.081,0,0,0,1.529,0l5.1-5.1a1.084,1.084,0,0,0,0-1.53,1.081,1.081,0,0,0-1.529,0L11.339,13.05,9.045,10.756a1.082,1.082,0,0,0-1.53,0Z"-->
-    <!--                                                        transform="translate(0 0)" fill="red" />-->
-    <!--                                                </g>-->
-    <!--                                            </g>-->
-    <!--                                        </svg>-->
-    <!--                                    @endif-->
-    <!--                                </div>-->
-    <!--                            </div>-->
+                                <div class="position-relative">
+                                    <a href="{{ route('shop.visit', $seller->slug) }}"
+                                        class="d-block mx-auto size-100px size-lg-120px border overflow-hidden hov-scale-img"
+                                        tabindex="0"
+                                        style="border: 1px solid #e5e5e5; border-radius: 50%; box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.06);">
+                                        <img src="{{ static_asset('assets/img/placeholder-rect.jpg') }}"
+                                            data-src="{{ uploaded_asset($seller->logo) }}" alt="{{ $seller->name }}"
+                                            class="img-fit h-100 lazyload has-transition"
+                                            onerror="this.onerror=null;this.src='{{ static_asset('assets/img/placeholder-rect.jpg') }}';">
+                                    </a>
+                                    <div class="absolute-top-left z-1 ml-2 mt-1 rounded-content bg-white">
+                                        @if ($seller->verification_status == 1)
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24.001" height="24"
+                                                viewBox="0 0 24.001 24">
+                                                <g id="Group_25929" data-name="Group 25929"
+                                                    transform="translate(-480 -345)">
+                                                    <circle id="Ellipse_637" data-name="Ellipse 637" cx="12"
+                                                        cy="12" r="12" transform="translate(480 345)"
+                                                        fill="#fff" />
+                                                    <g id="Group_25927" data-name="Group 25927"
+                                                        transform="translate(480 345)">
+                                                        <path id="Union_5" data-name="Union 5"
+                                                            d="M0,12A12,12,0,1,1,12,24,12,12,0,0,1,0,12Zm1.2,0A10.8,10.8,0,1,0,12,1.2,10.812,10.812,0,0,0,1.2,12Zm1.2,0A9.6,9.6,0,1,1,12,21.6,9.611,9.611,0,0,1,2.4,12Zm5.115-1.244a1.083,1.083,0,0,0,0,1.529l3.059,3.059a1.081,1.081,0,0,0,1.529,0l5.1-5.1a1.084,1.084,0,0,0,0-1.53,1.081,1.081,0,0,0-1.529,0L11.339,13.05,9.045,10.756a1.082,1.082,0,0,0-1.53,0Z"
+                                                            transform="translate(0 0)" fill="#85b567" />
+                                                    </g>
+                                                </g>
+                                            </svg>
+                                        @else
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24.001" height="24"
+                                                viewBox="0 0 24.001 24">
+                                                <g id="Group_25929" data-name="Group 25929"
+                                                    transform="translate(-480 -345)">
+                                                    <circle id="Ellipse_637" data-name="Ellipse 637" cx="12"
+                                                        cy="12" r="12" transform="translate(480 345)"
+                                                        fill="#fff" />
+                                                    <g id="Group_25927" data-name="Group 25927"
+                                                        transform="translate(480 345)">
+                                                        <path id="Union_5" data-name="Union 5"
+                                                            d="M0,12A12,12,0,1,1,12,24,12,12,0,0,1,0,12Zm1.2,0A10.8,10.8,0,1,0,12,1.2,10.812,10.812,0,0,0,1.2,12Zm1.2,0A9.6,9.6,0,1,1,12,21.6,9.611,9.611,0,0,1,2.4,12Zm5.115-1.244a1.083,1.083,0,0,0,0,1.529l3.059,3.059a1.081,1.081,0,0,0,1.529,0l5.1-5.1a1.084,1.084,0,0,0,0-1.53,1.081,1.081,0,0,0-1.529,0L11.339,13.05,9.045,10.756a1.082,1.082,0,0,0-1.53,0Z"
+                                                            transform="translate(0 0)" fill="red" />
+                                                    </g>
+                                                </g>
+                                            </svg>
+                                        @endif
+                                    </div>
+                                </div>
 
-    <!--                            <div class="ml-2 ml-lg-4">-->
+                                <div class="ml-2 ml-lg-4">
                                     <!-- Shop name -->
-    <!--                                <h2 class="fs-14 fw-700 text-dark text-truncate-2 mb-1">-->
-    <!--                                    <a href="{{ route('shop.visit', $seller->slug) }}"-->
-    <!--                                        class="text-reset hov-text-primary" tabindex="0">{{ $seller->name }}</a>-->
-    <!--                                </h2>-->
+                                    <h2 class="fs-14 fw-700 text-dark text-truncate-2 mb-1">
+                                        <a href="{{ route('shop.visit', $seller->slug) }}"
+                                            class="text-reset hov-text-primary" tabindex="0">{{ $seller->name }}</a>
+                                    </h2>
                                     <!-- Shop Rating -->
-    <!--                                <div class="rating rating-mr-1 text-dark mb-2">-->
-    <!--                                    {{ renderStarRating($seller->rating) }}-->
-    <!--                                    <span class="opacity-60 fs-14">({{ $seller->num_of_reviews }}-->
-    <!--                                        {{ translate('Reviews') }})</span>-->
-    <!--                                </div>-->
+                                    <div class="rating rating-mr-1 text-dark mb-2">
+                                        {{ renderStarRating($seller->rating) }}
+                                        <span class="opacity-60 fs-14">({{ $seller->num_of_reviews }}
+                                            {{ translate('Reviews') }})</span>
+                                    </div>
                                     <!-- Visit Button -->
-    <!--                                <a href="{{ route('shop.visit', $seller->slug) }}" class="visite-btn">-->
-    <!--                                    <span class="button-text">{{ ucfirst(translate('Visit Store')) }}</span>-->
-    <!--                                    <span class="icon-arrow"></span>-->
-    <!--                                </a>-->
-    <!--                            </div>-->
-    <!--                        </div>-->
-    <!--                    </div>-->
-    <!--                    @endforeach-->
-    <!--                </div>-->
-    <!--            </div>-->
-    <!--        </div>-->
-    <!--    </section>-->
-    <!--    @endif-->
-    <!--@endif-->
+                                    <a href="{{ route('shop.visit', $seller->slug) }}" class="visite-btn">
+                                        <span class="button-text">{{ ucfirst(translate('Visit Store')) }}</span>
+                                        <span class="icon-arrow"></span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+        </section>
+        @endif
+    @endif
 
     <!-- Top Brands -->
     @if (get_setting('top_brands') != null)

@@ -10,10 +10,10 @@
             }
         @endphp
         <!-- Image -->
-        <a href="{{ $product_url }}" class="d-block h-100">
-            <img class="lazyload mx-auto img-fit has-transition"
-                src="{{ get_image($product->thumbnail) }}"
-                alt="{{ $product->getTranslation('name') }}" title="{{ $product->getTranslation('name') }}"
+        <a href="{{ $product_url }}" class="d-flex justify-content-center align-items-center h-100">
+            <img class="lazyload mx-auto img-fit has-transition" style="object-fit: contain !important;"
+                src="{{ get_image($product->thumbnail) }}" alt="{{ $product->getTranslation('name') }}"
+                title="{{ $product->getTranslation('name') }}"
                 onerror="this.onerror=null;this.src='{{ static_asset('assets/img/placeholder.jpg') }}';">
         </a>
         <!-- Discount percentage tag -->
@@ -56,8 +56,7 @@
             </div>
             <!-- add to cart -->
             <a class="cart-btn absolute-bottom-left w-100 h-35px aiz-p-hov-icon text-white fs-13 fw-700 d-flex flex-column justify-content-center align-items-center @if (in_array($product->id, $cart_added)) active @endif"
-                href="javascript:void(0)"
-                onclick="showAddToCartModal({{ $product->id }})">
+                href="javascript:void(0)" onclick="showAddToCartModal({{ $product->id }})">
                 <span class="cart-btn-text">
                     {{ translate('Add to Cart') }}
                 </span>

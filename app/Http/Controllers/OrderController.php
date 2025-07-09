@@ -45,7 +45,7 @@ class OrderController extends Controller
         $delivery_status = null;
         $payment_status = '';
 
-        $orders = Order::with('orderDetails')->orderBy('id', 'desc');
+        $orders = Order::orderBy('id', 'desc');
         $admin_user_id = User::where('user_type', 'admin')->first()->id;
 
 
@@ -104,80 +104,16 @@ class OrderController extends Controller
         $orders = $orders->paginate(15);
         return view('backend.sales.index', compact('orders', 'sort_search', 'payment_status', 'delivery_status', 'date'));
     }
-    
-    public function edit($id)
-    {
-        $order = Order::where('id', $id)->with('orderDetails.product')->first();
-        return view('backend.sales.edit' , compact('order'));
-    }
-    
-    public function orders_update(Request $request, $id)
-    {
-        $order = Order::where('id',$id)->with('orderDetails')->first();
 
-        if ($request->has('quantities')) {
-            foreach ($order->orderDetails as $orderDetail) {
-                if (isset($request->quantities[$orderDetail->id])) {
-                    $orderDetail->quantity = $request->quantities[$orderDetail->id];
-                    $orderDetail->save();
-                }
-            }
-        }
-        
-        flash(translate('Order has been updated successfully'))->success();
-        
-        return back();
-    
-        //return redirect()->back()->with('success', 'تم تحديث تكلفة الشحن والمجموع الكلي بنجاح');
-    }
-
-    public function orderShippingCost_update(Request $request, $id)
-    {
-        $order = Order::where('id',$id)->with('orderDetails')->first();
-        $combined_order_id = $order->combined_order_id;
-        $combined_orders = CombinedOrder::where('id',$combined_order_id)->first();
-
-        $combined_orders->grand_total -= $order->shipping_cost;
-        $order->grand_total-=$order->shipping_cost;
-        $new_shipping_cost = $request->input('shipping_cost');
-        $combined_orders->grand_total += $new_shipping_cost;
-        $combined_orders->save();
-        $order->shipping_cost = $request->input('shipping_cost');
-        $order->grand_total += $new_shipping_cost;
-        $order->shipping_cost_status=1;
-        $order->save();  
-        NotificationUtility::sendNotification($order,'updateshipping');    
-        
-        flash(translate('Order shipping cost has been updated successfully'))->success();
-        
-        return back();
-    }
-
-    public function removeProduct($orderId, $orderDetailId)
-    {
-        $order = Order::with('orderDetails')->findOrFail($orderId);
-
-        if ($order->orderDetails->count() <= 1) {
-            return redirect()->back()->with('error', 'Cannot delete the last product from the order. You should delete the order.');
-        }
-
-        $orderDetail = $order->orderDetails()->findOrFail($orderDetailId);
-
-        $orderDetail->delete();
-
-        return redirect()->back()->with('success', 'Product removed from the order successfully.');
-    }
-
-    
     public function show($id)
     {
         $order = Order::findOrFail(decrypt($id));
-        
+
         $order_shipping_address = json_decode($order->shipping_address);
         $delivery_boys = User::where('city', $order_shipping_address->city)
                 ->where('user_type', 'delivery_boy')
                 ->get();
-                
+
         if(env('DEMO_MODE') == 'On') {
             $order->viewed = 1;
             $order->save();
@@ -369,7 +305,10 @@ class OrderController extends Controller
      * @param int $id
      * @return \Illuminate\Http\Response
      */
-    
+    public function edit($id)
+    {
+        //
+    }
 
     /**
      * Update the specified resource in storage.
@@ -378,7 +317,10 @@ class OrderController extends Controller
      * @param int $id
      * @return \Illuminate\Http\Response
      */
-    
+    public function update(Request $request, $id)
+    {
+        //
+    }
 
     /**
      * Remove the specified resource from storage.
@@ -501,7 +443,7 @@ class OrderController extends Controller
             $request->device_token = $order->user->device_token;
             $request->title = "Order updated !";
             $status = str_replace("_", "", $order->delivery_status);
-            $request->text = " Your Order {$order->code} has been {$status}";
+            $request->text = " Your order {$order->code} has been {$status}";
 
             $request->type = "order";
             $request->id = $order->id;
@@ -571,7 +513,7 @@ class OrderController extends Controller
             $request->device_token = $order->user->device_token;
             $request->title = "Order updated !";
             $status = str_replace("_", "", $order->payment_status);
-            $request->text = " Your Order {$order->code} has been {$status}";
+            $request->text = " Your order {$order->code} has been {$status}";
 
             $request->type = "order";
             $request->id = $order->id;

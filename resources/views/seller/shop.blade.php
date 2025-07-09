@@ -28,14 +28,20 @@
                     </div>
                 </div>
                 <div class="row mb-3">
-                    <label class="col-md-2 col-form-label">{{ translate('Shop Logo') }}</label>
+                    <label class="col-md-2 col-form-label">{{ translate('Shop Category') }}</label>
+                    <div class="col-md-10">
+                        <div class="form-control-plaintext"></div>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label class="col-md-2 col-form-label">{{ translate('Shop Logo') }}<span class="text-danger text-danger">*</span></label>
                     <div class="col-md-10">
                         <div class="input-group" data-toggle="aizuploader" data-type="image">
                             <div class="input-group-prepend">
                                 <div class="input-group-text bg-soft-secondary font-weight-medium">{{ translate('Browse')}}</div>
                             </div>
                             <div class="form-control file-amount">{{ translate('Choose File') }}</div>
-                            <input type="hidden" name="logo" value="{{ $shop->logo }}" class="selected-files">
+                            <input type="hidden" name="logo" value="{{ $shop->logo }}" class="selected-files" required>
                         </div>
                         <div class="file-preview box sm">
                         </div>
@@ -245,7 +251,7 @@
     </div>
 
     <!-- Social Media Link -->
-    <div class="card">
+    {{-- <div class="card">
         <div class="card-header">
             <h5 class="mb-0 h6">{{ translate('Social Media Link') }}</h5>
         </div>
@@ -295,7 +301,7 @@
                 </div>
             </form>
         </div>
-    </div>
+    </div> --}}
 
 @endsection
 

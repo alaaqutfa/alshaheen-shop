@@ -513,7 +513,7 @@
                                                             class="img-fit mb-2">
                                                         <span class="d-block text-center">
                                                             <span
-                                                                class="d-block fw-600 fs-15">{{ translate('Payment upon Shipping Cost Confirmation') }}</span>
+                                                                class="d-block fw-600 fs-15">{{ translate('Cash on Delivery') }}</span>
                                                         </span>
                                                     </span>
                                                 </label>

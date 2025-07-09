@@ -3,6 +3,7 @@
 use App\Http\Controllers\AddonController;
 use App\Http\Controllers\Admin\Report\EarningReportController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\SellerRequestController;
 use App\Http\Controllers\AizUploadController;
 use App\Http\Controllers\AttributeController;
 use App\Http\Controllers\BlogCategoryController;
@@ -80,6 +81,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'prevent-ba
     Route::controller(CategoryController::class)->group(function () {
         Route::get('/categories/edit/{id}', 'edit')->name('categories.edit');
         Route::get('/categories/destroy/{id}', 'destroy')->name('categories.destroy');
+        Route::post('/categories/activated', 'updateActivated')->name('categories.activated');
         Route::post('/categories/featured', 'updateFeatured')->name('categories.featured');
         Route::post('/categories/categoriesByType', 'categoriesByType')->name('categories.categories-by-type');
 
@@ -177,6 +179,13 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'prevent-ba
     Route::controller(PaymentController::class)->group(function () {
         Route::get('/seller/payments', 'payment_histories')->name('sellers.payment_histories');
         Route::get('/seller/payments/show/{id}', 'show')->name('sellers.payment_history');
+    });
+
+    // Seller Requests
+    Route::controller(SellerRequestController::class)->group(function () {
+        Route::get('/seller/requests', 'index')->name('sellers.requests.index');
+        Route::post('/seller/request/approved', 'updateApproval')->name('seller.requests.approved');
+        Route::get('/seller/requests/{id}', 'destroy')->name('sellers.request.destroy');
     });
 
     // Seller Withdraw Request
@@ -357,17 +366,10 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'prevent-ba
         // All Orders
         Route::get('/all_orders', 'all_orders')->name('all_orders.index');
         Route::get('/inhouse-orders', 'all_orders')->name('inhouse_orders.index');
-
         Route::get('/seller_orders', 'all_orders')->name('seller_orders.index');
         Route::get('orders_by_pickup_point', 'all_orders')->name('pick_up_point.index');
 
         Route::get('/orders/{id}/show', 'show')->name('all_orders.show');
-        //
-        Route::get('/orders/{id}/edit', 'orders_edit')->name('orders.edit');
-        Route::get('/orders/{id}/update', 'orders_update')->name('order.update');
-        Route::get('/orders/{id}/shipping-cost-update', 'orderShippingCost_update')->name('shipping.cost.order.update');
-        Route::delete('orders/{orderId}/removeProduct/{orderDetailId}', [OrderController::class, 'removeProduct'])->name('orders.removeProduct');
-        //
         Route::get('/inhouse-orders/{id}/show', 'show')->name('inhouse_orders.show');
         Route::get('/seller_orders/{id}/show', 'show')->name('seller_orders.show');
         Route::get('/orders_by_pickup_point/{id}/show', 'show')->name('pick_up_point.order_show');

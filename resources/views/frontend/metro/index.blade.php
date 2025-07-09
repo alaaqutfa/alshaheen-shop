@@ -2,13 +2,15 @@
 
 @section('content')
     <style>
-        #section_featured .slick-slider .slick-list{
+        #section_featured .slick-slider .slick-list {
             background: #fff;
         }
+
         #section_featured .slick-slider .slick-list .slick-slide {
             margin-bottom: -5px;
         }
-        @media (max-width: 575px){
+
+        @media (max-width: 575px) {
             #section_featured .slick-slider .slick-list .slick-slide {
                 margin-bottom: -4px;
             }
@@ -23,7 +25,8 @@
             <!-- Sliders -->
             <div class="home-slider slider-full">
                 @if (get_setting('home_slider_images', null, $lang) != null)
-                    <div class="aiz-carousel dots-inside-bottom mobile-img-auto-height" data-autoplay="true" data-infinite="true">
+                    <div class="aiz-carousel dots-inside-bottom mobile-img-auto-height" data-autoplay="true"
+                        data-infinite="true">
                         @php
                             $decoded_slider_images = json_decode(get_setting('home_slider_images', null, $lang), true);
                             $sliders = get_slider_images($decoded_slider_images);
@@ -31,13 +34,15 @@
                         @endphp
                         @foreach ($sliders as $key => $slider)
                             <div class="carousel-box">
-                                <a href="{{ isset(json_decode($home_slider_links, true)[$key]) ? json_decode($home_slider_links, true)[$key] : '' }}">
+                                <a
+                                    href="{{ isset(json_decode($home_slider_links, true)[$key]) ? json_decode($home_slider_links, true)[$key] : '' }}">
                                     <!-- Image -->
-                                    <div class="d-block mw-100 img-fit overflow-hidden h-180px h-md-320px h-lg-460px h-xl-553px overflow-hidden">
+                                    <div
+                                        class="d-block mw-100 img-fit overflow-hidden h-180px h-md-320px h-lg-460px h-xl-553px overflow-hidden">
                                         <img class="img-fit h-100 m-auto has-transition ls-is-cached lazyloaded"
-                                        src="{{ $slider ? my_asset($slider->file_name) : static_asset('assets/img/placeholder.jpg') }}"
-                                        alt="{{ env('APP_NAME') }} promo"
-                                        onerror="this.onerror=null;this.src='{{ static_asset('assets/img/placeholder-rect.jpg') }}';">
+                                            src="{{ $slider ? my_asset($slider->file_name) : static_asset('assets/img/placeholder.jpg') }}"
+                                            alt="{{ env('APP_NAME') }} promo"
+                                            onerror="this.onerror=null;this.src='{{ static_asset('assets/img/placeholder-rect.jpg') }}';">
                                     </div>
                                 </a>
                             </div>
@@ -52,18 +57,25 @@
     @php
         $flash_deal = get_featured_flash_deal();
         $flash_deal_bg = get_setting('flash_deal_bg_color');
-        $flash_deal_bg_full_width = (get_setting('flash_deal_bg_full_width') == 1) ? true : false;
-        $flash_deal_banner_menu_text = ((get_setting('flash_deal_banner_menu_text') == 'dark') ||  (get_setting('flash_deal_banner_menu_text') == null)) ? 'text-dark' : 'text-white';
+        $flash_deal_bg_full_width = get_setting('flash_deal_bg_full_width') == 1 ? true : false;
+        $flash_deal_banner_menu_text =
+            get_setting('flash_deal_banner_menu_text') == 'dark' || get_setting('flash_deal_banner_menu_text') == null
+                ? 'text-dark'
+                : 'text-white';
 
     @endphp
     @if ($flash_deal != null)
-        <section class="mb-2 mb-md-3 mt-2 mt-md-3" style="background: {{ ($flash_deal_bg_full_width && $flash_deal_bg != null) ? $flash_deal_bg : '' }};" id="flash_deal">
+        <section class="mb-2 mb-md-3 mt-2 mt-md-3"
+            style="background: {{ $flash_deal_bg_full_width && $flash_deal_bg != null ? $flash_deal_bg : '' }};"
+            id="flash_deal">
             <div class="container">
                 <!-- Top Section sm to lg -->
-                <div class="d-flex d-lg-none flex-wrap mb-2 mb-md-3 @if ($flash_deal_bg_full_width && $flash_deal_bg != null) pt-2 pt-md-3 @endif align-items-baseline justify-content-between">
+                <div
+                    class="d-flex d-lg-none flex-wrap mb-2 mb-md-3 @if ($flash_deal_bg_full_width && $flash_deal_bg != null) pt-2 pt-md-3 @endif align-items-baseline justify-content-between">
                     <!-- Title -->
                     <h3 class="fs-16 fs-md-20 fw-700 mb-2 mb-sm-0">
-                        <span class="d-inline-block {{ ($flash_deal_bg_full_width && $flash_deal_bg != null) ? $flash_deal_banner_menu_text : 'text-dark'}}">{{ translate('Flash Sale') }}</span>
+                        <span
+                            class="d-inline-block {{ $flash_deal_bg_full_width && $flash_deal_bg != null ? $flash_deal_banner_menu_text : 'text-dark' }}">{{ translate('Flash Sale') }}</span>
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="24" viewBox="0 0 16 24"
                             class="ml-3">
                             <path id="Path_28795" data-name="Path 28795"
@@ -75,10 +87,10 @@
                     <div>
                         <div class="text-dark d-flex align-items-center mb-0">
                             <a href="{{ route('flash-deals') }}"
-                                class="fs-10 fs-md-12 fw-700 has-transition @if ((get_setting('flash_deal_banner_menu_text') == 'light') && $flash_deal_bg_full_width && $flash_deal_bg != null) text-white opacity-60 hov-opacity-100 animate-underline-white @else text-reset opacity-60 hov-opacity-100 hov-text-primary animate-underline-primary @endif mr-3">{{ translate('View All Flash Sale') }}</a>
+                                class="fs-10 fs-md-12 fw-700 has-transition @if (get_setting('flash_deal_banner_menu_text') == 'light' && $flash_deal_bg_full_width && $flash_deal_bg != null) text-white opacity-60 hov-opacity-100 animate-underline-white @else text-reset opacity-60 hov-opacity-100 hov-text-primary animate-underline-primary @endif mr-3">{{ translate('View All Flash Sale') }}</a>
                             <span class=" border-left border-soft-light border-width-2 pl-3">
                                 <a href="{{ route('flash-deal-details', $flash_deal->slug) }}"
-                                    class="fs-10 fs-md-12 fw-700 has-transition @if ((get_setting('flash_deal_banner_menu_text') == 'light') && $flash_deal_bg_full_width && $flash_deal_bg != null) == 'light') text-white opacity-60 hov-opacity-100 animate-underline-white @else text-reset opacity-60 hov-opacity-100 hov-text-primary animate-underline-primary @endif">{{ translate('View All Products from This Flash Sale') }}</a>
+                                    class="fs-10 fs-md-12 fw-700 has-transition @if (get_setting('flash_deal_banner_menu_text') == 'light' && $flash_deal_bg_full_width && $flash_deal_bg != null) == 'light') text-white opacity-60 hov-opacity-100 animate-underline-white @else text-reset opacity-60 hov-opacity-100 hov-text-primary animate-underline-primary @endif">{{ translate('View All Products from This Flash Sale') }}</a>
                             </span>
                         </div>
                     </div>
@@ -106,12 +118,14 @@
                     <div class="col-xxl-8 col-lg-7 col-6">
                         <div class="pl-3 pr-lg-3 pl-xl-2rem pr-xl-2rem">
                             <!-- Top Section from lg device -->
-                            <div class="d-none d-lg-flex flex-wrap mb-2 mb-md-3 align-items-baseline justify-content-between">
+                            <div
+                                class="d-none d-lg-flex flex-wrap mb-2 mb-md-3 align-items-baseline justify-content-between">
                                 <!-- Title -->
                                 <h3 class="fs-16 fs-md-20 fw-700 mb-2">
-                                    <span class="d-inline-block {{ $flash_deal_banner_menu_text }}">{{ translate('Flash Sale') }}</span>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="24" viewBox="0 0 16 24"
-                                        class="ml-3">
+                                    <span
+                                        class="d-inline-block {{ $flash_deal_banner_menu_text }}">{{ translate('Flash Sale') }}</span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="24"
+                                        viewBox="0 0 16 24" class="ml-3">
                                         <path id="Path_28795" data-name="Path 28795"
                                             d="M30.953,13.695a.474.474,0,0,0-.424-.25h-4.9l3.917-7.81a.423.423,0,0,0-.028-.428.477.477,0,0,0-.4-.207H21.588a.473.473,0,0,0-.429.263L15.041,18.151a.423.423,0,0,0,.034.423.478.478,0,0,0,.4.2h4.593l-2.229,9.683a.438.438,0,0,0,.259.5.489.489,0,0,0,.571-.127L30.9,14.164a.425.425,0,0,0,.054-.469Z"
                                             transform="translate(-15 -5)" fill="#fcc201" />
@@ -136,15 +150,19 @@
                                 $flash_deal_products = get_flash_deal_products($flash_deal->id);
                             @endphp
                             <div class="aiz-carousel border-top @if (count($flash_deal_products) > 8) border-right @endif arrow-inactive-none arrow-x-0"
-                                data-rows="2" data-items="5" data-xxl-items="5" data-xl-items="3.5" data-lg-items="3" data-md-items="2"
-                                data-sm-items="2.5" data-xs-items="1.7" data-arrows="true" data-dots="false">
+                                data-rows="2" data-items="5" data-xxl-items="5" data-xl-items="3.5" data-lg-items="3"
+                                data-md-items="2" data-sm-items="2.5" data-xs-items="1.7" data-arrows="true"
+                                data-dots="false">
                                 @foreach ($flash_deal_products as $key => $flash_deal_product)
                                     <div class="carousel-box bg-white border-left border-bottom">
                                         @if ($flash_deal_product->product != null && $flash_deal_product->product->published != 0)
                                             @php
                                                 $product_url = route('product', $flash_deal_product->product->slug);
                                                 if ($flash_deal_product->product->auction_product == 1) {
-                                                    $product_url = route('auction-product', $flash_deal_product->product->slug);
+                                                    $product_url = route(
+                                                        'auction-product',
+                                                        $flash_deal_product->product->slug,
+                                                    );
                                                 }
                                             @endphp
                                             <div
@@ -184,7 +202,8 @@
     @php
         $todays_deal_section_bg = get_setting('todays_deal_section_bg_color');
     @endphp
-    <div id="todays_deal" class="mb-2rem mt-2 mt-md-3" @if(get_setting('todays_deal_section_bg') == 1) style="background: {{ $todays_deal_section_bg }};" @endif>
+    <div id="todays_deal" class="mb-2rem mt-2 mt-md-3"
+        @if (get_setting('todays_deal_section_bg') == 1) style="background: {{ $todays_deal_section_bg }};" @endif>
 
     </div>
 
@@ -210,13 +229,14 @@
                             @php
                                 $category_name = $category->getTranslation('name');
                             @endphp
-                            <div class="carousel-box position-relative p-0 has-transition border-right border-top border-bottom @if ($key == 0) border-left @endif">
+                            <div
+                                class="carousel-box position-relative p-0 has-transition border-right border-top border-bottom @if ($key == 0) border-left @endif">
                                 <div class="h-200px h-sm-250px h-md-340px">
                                     <div class="h-100 w-100 w-xl-auto position-relative hov-scale-img overflow-hidden">
                                         <div class="position-absolute h-100 w-100 overflow-hidden">
                                             <img src="{{ isset($category->coverImage->file_name) ? my_asset($category->coverImage->file_name) : static_asset('assets/img/placeholder.jpg') }}"
-                                                alt="{{ $category_name }}"
-                                                class="img-fit h-100 has-transition"
+                                                alt="{{ $category_name }}" class="img-fit h-100 has-transition"
+                                                style="object-fit: contain !important;"
                                                 onerror="this.onerror=null;this.src='{{ static_asset('assets/img/placeholder.jpg') }}';">
                                         </div>
                                         <div class="pb-4 px-4 absolute-bottom-left has-transition h-50 w-100 d-flex flex-column align-items-center justify-content-end"
@@ -230,9 +250,10 @@
                                                 </a>
                                                 <div class="d-flex flex-wrap h-50px overflow-hidden mt-2">
                                                     @foreach ($category->childrenCategories->take(6) as $key => $child_category)
-                                                    <a href="{{ route('products.category', $child_category->slug) }}" class="fs-13 fw-300 text-soft-light hov-text-white pr-3 pt-1">
-                                                        {{ $child_category->getTranslation('name') }}
-                                                    </a>
+                                                        <a href="{{ route('products.category', $child_category->slug) }}"
+                                                            class="fs-13 fw-300 text-soft-light hov-text-white pr-3 pt-1">
+                                                            {{ $child_category->getTranslation('name') }}
+                                                        </a>
                                                     @endforeach
                                                 </div>
                                             </div>
@@ -365,7 +386,7 @@
     @endif
 
     <!-- Cupon -->
-    @if (get_setting('coupon_system') == 1)
+    {{-- @if (get_setting('coupon_system') == 1)
         <div class=" mt-2 mt-md-3"
             style="background-color: {{ get_setting('cupon_background_color', '#292933') }}">
             <div class="container">
@@ -444,7 +465,7 @@
                 </div>
             </div>
         </div>
-    @endif
+    @endif --}}
 
     <!-- Category wise Products -->
     <div id="section_home_categories" style="background: #f5f5fa;">
@@ -542,86 +563,95 @@
     @endif
 
     <!-- Top Sellers -->
-    <!--@if (get_setting('vendor_system_activation') == 1)-->
-    <!--    @php-->
-    <!--        $best_selers = get_best_sellers(10);-->
-    <!--    @endphp-->
-    <!--    @if (count($best_selers) > 0)-->
-    <!--    <section class="mb-2 mb-md-3 mt-2 mt-md-3">-->
-    <!--        <div class="container">-->
-                <!-- Top Section -->
-    <!--            <div class="d-flex mb-2 mb-md-3 align-items-baseline justify-content-between">-->
-                    <!-- Title -->
-    <!--                <h3 class="fs-16 fs-md-20 fw-700 mb-2 mb-sm-0">-->
-    <!--                    <span class="pb-3">{{ translate('Top Sellers') }}</span>-->
-    <!--                </h3>-->
-                    <!-- Links -->
-    <!--                <div class="d-flex">-->
-    <!--                    <a class="text-blue fs-10 fs-md-12 fw-700 hov-text-primary animate-underline-primary"-->
-    <!--                        href="{{ route('sellers') }}">{{ translate('View All Sellers') }}</a>-->
-    <!--                </div>-->
-    <!--            </div>-->
-                <!-- Sellers Section -->
-    <!--            <div class="aiz-carousel arrow-x-0 arrow-inactive-none" data-items="5" data-xxl-items="5"-->
-    <!--                data-xl-items="4" data-lg-items="3.4" data-md-items="2.5" data-sm-items="2" data-xs-items="1.4"-->
-    <!--                data-arrows="true" data-dots="false">-->
-    <!--                @foreach ($best_selers as $key => $seller)-->
-    <!--                    @if ($seller->user != null)-->
-    <!--                        <div-->
-    <!--                            class="carousel-box h-100 position-relative text-center border-right border-top border-bottom @if ($key == 0) border-left @endif has-transition hov-animate-outline">-->
-    <!--                            <div class="position-relative px-3" style="padding-top: 2rem; padding-bottom:2rem;">-->
-                                    <!-- Shop logo & Verification Status -->
-    <!--                                <div class="mx-auto size-100px size-md-120px">-->
-    <!--                                    <a href="{{ route('shop.visit', $seller->slug) }}"-->
-    <!--                                        class="d-flex mx-auto justify-content-center align-item-center size-100px size-md-120px border overflow-hidden hov-scale-img"-->
-    <!--                                        tabindex="0"-->
-    <!--                                        style="border: 1px solid #e5e5e5; border-radius: 50%; box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.06);">-->
-    <!--                                        <img src="{{ static_asset('assets/img/placeholder-rect.jpg') }}"-->
-    <!--                                            data-src="{{ uploaded_asset($seller->logo) }}" alt="{{ $seller->name }}"-->
-    <!--                                            class="img-fit lazyload has-transition"-->
-    <!--                                            onerror="this.onerror=null;this.src='{{ static_asset('assets/img/placeholder-rect.jpg') }}';">-->
-    <!--                                    </a>-->
-    <!--                                </div>-->
-                                    <!-- Shop name -->
-    <!--                                <h2 class="fs-14 fw-700 text-dark text-truncate-2 h-40px mt-3 mt-md-4 mb-0 mb-md-3">-->
-    <!--                                    <a href="{{ route('shop.visit', $seller->slug) }}"-->
-    <!--                                        class="text-reset hov-text-primary" tabindex="0">{{ $seller->name }}</a>-->
-    <!--                                </h2>-->
-                                    <!-- Shop Rating -->
-    <!--                                <div class="rating rating-mr-2 text-dark mb-3">-->
-    <!--                                    {{ renderStarRating($seller->rating) }}-->
-    <!--                                    <span class="opacity-60 fs-14">({{ $seller->num_of_reviews }}-->
-    <!--                                        {{ translate('Reviews') }})</span>-->
-    <!--                                </div>-->
-                                    <!-- Visit Button -->
-    <!--                                <a href="{{ route('shop.visit', $seller->slug) }}" class="btn-visit">-->
-    <!--                                    <span class="circle" aria-hidden="true">-->
-    <!--                                        <span class="icon arrow"></span>-->
-    <!--                                    </span>-->
-    <!--                                    <span class="button-text">{{ translate('Visit Store') }}</span>-->
-    <!--                                </a>-->
-    <!--                                @if ($seller->verification_status == 1)-->
-    <!--                                    <span class="absolute-top-right mr-2rem">-->
-    <!--                                        <svg xmlns="http://www.w3.org/2000/svg" width="31.999" height="48.001" viewBox="0 0 31.999 48.001">-->
-    <!--                                            <g id="Group_25062" data-name="Group 25062" transform="translate(-532 -1033.999)">-->
-    <!--                                            <path id="Union_3" data-name="Union 3" d="M1937,12304h16v14Zm-16,0h16l-16,14Zm0,0v-34h32v34Z" transform="translate(-1389 -11236)" fill="#85b567"/>-->
-    <!--                                            <path id="Union_5" data-name="Union 5" d="M1921,12280a10,10,0,1,1,10,10A10,10,0,0,1,1921,12280Zm1,0a9,9,0,1,0,9-9A9.011,9.011,0,0,0,1922,12280Zm1,0a8,8,0,1,1,8,8A8.009,8.009,0,0,1,1923,12280Zm4.26-1.033a.891.891,0,0,0-.262.636.877.877,0,0,0,.262.632l2.551,2.551a.9.9,0,0,0,.635.266.894.894,0,0,0,.639-.266l4.247-4.244a.9.9,0,0,0-.639-1.542.893.893,0,0,0-.635.266l-3.612,3.608-1.912-1.906a.89.89,0,0,0-1.274,0Z" transform="translate(-1383 -11226)" fill="#fff"/>-->
-    <!--                                            </g>-->
-    <!--                                        </svg>-->
-    <!--                                    </span>-->
-    <!--                                @endif-->
-    <!--                            </div>-->
-    <!--                        </div>-->
-    <!--                    @endif-->
-    <!--                @endforeach-->
-    <!--            </div>-->
-    <!--        </div>-->
-    <!--    </section>-->
-    <!--    @endif-->
-    <!--@endif-->
+    @if (get_setting('vendor_system_activation') == 1)
+        @php
+            $best_selers = get_best_sellers(10);
+        @endphp
+        @if (count($best_selers) > 0)
+            <section class="mb-2 mb-md-3 mt-2 mt-md-3">
+                <div class="container">
+                    <!-- Top Section -->
+                    <div class="d-flex mb-2 mb-md-3 align-items-baseline justify-content-between">
+                        <!-- Title -->
+                        <h3 class="fs-16 fs-md-20 fw-700 mb-2 mb-sm-0">
+                            <span class="pb-3">{{ translate('Top Sellers') }}</span>
+                        </h3>
+                        <!-- Links -->
+                        <div class="d-flex">
+                            <a class="text-blue fs-10 fs-md-12 fw-700 hov-text-primary animate-underline-primary"
+                                href="{{ route('sellers') }}">{{ translate('View All Sellers') }}</a>
+                        </div>
+                    </div>
+                    <!-- Sellers Section -->
+                    <div class="aiz-carousel arrow-x-0 arrow-inactive-none" data-items="5" data-xxl-items="5"
+                        data-xl-items="4" data-lg-items="3.4" data-md-items="2.5" data-sm-items="2" data-xs-items="1.4"
+                        data-arrows="true" data-dots="false">
+                        @foreach ($best_selers as $key => $seller)
+                            @if ($seller->user != null)
+                                <div
+                                    class="carousel-box h-100 position-relative text-center border-right border-top border-bottom @if ($key == 0) border-left @endif has-transition hov-animate-outline">
+                                    <div class="position-relative px-3" style="padding-top: 2rem; padding-bottom:2rem;">
+                                        <!-- Shop logo & Verification Status -->
+                                        <div class="mx-auto size-100px size-md-120px">
+                                            <a href="{{ route('shop.visit', $seller->slug) }}"
+                                                class="d-flex mx-auto justify-content-center align-item-center size-100px size-md-120px border overflow-hidden hov-scale-img"
+                                                tabindex="0"
+                                                style="border: 1px solid #e5e5e5; border-radius: 50%; box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.06);">
+                                                <img src="{{ static_asset('assets/img/placeholder-rect.jpg') }}"
+                                                    data-src="{{ uploaded_asset($seller->logo) }}"
+                                                    alt="{{ $seller->name }}" class="img-fit lazyload has-transition"
+                                                    onerror="this.onerror=null;this.src='{{ static_asset('assets/img/placeholder-rect.jpg') }}';">
+                                            </a>
+                                        </div>
+                                        <!-- Shop name -->
+                                        <h2
+                                            class="fs-14 fw-700 text-dark text-truncate-2 h-40px mt-3 mt-md-4 mb-0 mb-md-3">
+                                            <a href="{{ route('shop.visit', $seller->slug) }}"
+                                                class="text-reset hov-text-primary"
+                                                tabindex="0">{{ $seller->name }}</a>
+                                        </h2>
+                                        <!-- Shop Rating -->
+                                        <div class="rating rating-mr-2 text-dark mb-3">
+                                            {{ renderStarRating($seller->rating) }}
+                                            <span class="opacity-60 fs-14">({{ $seller->num_of_reviews }}
+                                                {{ translate('Reviews') }})</span>
+                                        </div>
+                                        <!-- Visit Button -->
+                                        <a href="{{ route('shop.visit', $seller->slug) }}" class="btn-visit">
+                                            <span class="circle" aria-hidden="true">
+                                                <span class="icon arrow"></span>
+                                            </span>
+                                            <span class="button-text">{{ translate('Visit Store') }}</span>
+                                        </a>
+                                        @if ($seller->verification_status == 1)
+                                            <span class="absolute-top-right mr-2rem">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="31.999" height="48.001"
+                                                    viewBox="0 0 31.999 48.001">
+                                                    <g id="Group_25062" data-name="Group 25062"
+                                                        transform="translate(-532 -1033.999)">
+                                                        <path id="Union_3" data-name="Union 3"
+                                                            d="M1937,12304h16v14Zm-16,0h16l-16,14Zm0,0v-34h32v34Z"
+                                                            transform="translate(-1389 -11236)" fill="#85b567" />
+                                                        <path id="Union_5" data-name="Union 5"
+                                                            d="M1921,12280a10,10,0,1,1,10,10A10,10,0,0,1,1921,12280Zm1,0a9,9,0,1,0,9-9A9.011,9.011,0,0,0,1922,12280Zm1,0a8,8,0,1,1,8,8A8.009,8.009,0,0,1,1923,12280Zm4.26-1.033a.891.891,0,0,0-.262.636.877.877,0,0,0,.262.632l2.551,2.551a.9.9,0,0,0,.635.266.894.894,0,0,0,.639-.266l4.247-4.244a.9.9,0,0,0-.639-1.542.893.893,0,0,0-.635.266l-3.612,3.608-1.912-1.906a.89.89,0,0,0-1.274,0Z"
+                                                            transform="translate(-1383 -11226)" fill="#fff" />
+                                                    </g>
+                                                </svg>
+                                            </span>
+                                        @endif
+                                    </div>
+                                </div>
+                            @endif
+                        @endforeach
+                    </div>
+                </div>
+            </section>
+        @endif
+    @endif
 
     <!-- Top Brands -->
-    @if (get_setting('top_brands') != null)
+
+    @if (get_setting('top_brands') != null && !empty($top_brands))
         <section class="mb-2 mb-md-3 mt-2 mt-md-3">
             <div class="container">
                 <!-- Top Section -->
@@ -663,4 +693,3 @@
     @endif
 
 @endsection
-

@@ -335,12 +335,12 @@
                                 </div>
                             @endif
 
-                            <div class="row">
+                            <div class="row d-none">
                                 <div class="col-md-2">
                                     <label>{{ translate('Postal code')}}</label>
                                 </div>
                                 <div class="col-md-10">
-                                    <input type="text" class="form-control mb-3" placeholder="{{ translate('Your Postal Code')}}" name="postal_code" value="" required>
+                                    <input type="hidden" class="form-control mb-3" placeholder="{{ translate('Your Postal Code')}}" name="postal_code" value="0">
                                 </div>
                             </div>
                             <div class="row">

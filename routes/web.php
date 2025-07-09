@@ -36,8 +36,6 @@ use App\Http\Controllers\Payment\PaystackController;
 use App\Http\Controllers\Payment\RazorpayController;
 use App\Http\Controllers\Payment\SslcommerzController;
 use App\Http\Controllers\Payment\StripeController;
-use App\Http\Controllers\Payment\TelrController;
-use App\Http\Controllers\Payment\MagnatiController;
 use App\Http\Controllers\Payment\TapController;
 use App\Http\Controllers\Payment\VoguepayController;
 use App\Http\Controllers\ProductQueryController;
@@ -121,6 +119,9 @@ Route::controller(HomeController::class)->group(function () {
 
     //Home Page
     Route::get('/', 'index')->name('home');
+
+    //All Products Page
+    Route::get('/products', 'allproducts')->name('allproducts');
 
     Route::post('/home/section/featured', 'load_featured_section')->name('home.section.featured');
     Route::post('/home/section/todays-deal', 'load_todays_deal_section')->name('home.section.todays_deal');
@@ -235,23 +236,6 @@ Route::controller(StripeController::class)->group(function () {
     Route::get('/stripe/cancel', 'cancel')->name('stripe.cancel');
 });
 //Stripe END
-
-//Telr Start
-Route::controller(TelrController::class)->group(function () {
-    Route::get('telr', 'telr');
-    Route::post('/telr/create-checkout-session', 'create_checkout_session')->name('telr.get_token');
-    Route::get('/telr/success', 'success')->name('telr.success');
-    Route::get('/telr/cancel', 'cancel')->name('telr.cancel');
-});
-//Telr END
-
-//Magnati Start
-Route::controller(MagnatiController::class)->group(function () {
-    Route::get('magnati', 'magnati');
-    Route::post('/magnati/success', 'success')->name('magnati.success');
-    Route::post('/magnati/cancel', 'cancel')->name('magnati.cancel');
-});
-//Magnati END
 
 // Compare
 Route::controller(CompareController::class)->group(function () {

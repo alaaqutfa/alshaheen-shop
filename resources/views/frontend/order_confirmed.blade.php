@@ -31,7 +31,7 @@
                         <div class="col done">
                             <div class="text-center border border-bottom-6px p-2 text-success">
                                 <i class="la-3x mb-2 las la-credit-card"></i>
-                                <h3 class="fs-14 fw-600 d-none d-lg-block">{{ translate('4. Payment info') }}</h3>
+                                <h3 class="fs-14 fw-600 d-none d-lg-block">{{ translate('4. Payment') }}</h3>
                             </div>
                         </div>
                         <div class="col active">
@@ -206,7 +206,7 @@
                                                     <tr>
                                                         <th class="border-top-0 py-2">{{ translate('Shipping')}}</th>
                                                         <td class="text-right border-top-0 pr-0 py-2">
-                                                            <span>{{ single_price($order->shipping_cost) }}</span>
+                                                            <span>{{ single_price($order->orderDetails->sum('shipping_cost')) }}</span>
                                                         </td>
                                                     </tr>
                                                     <!-- Tax -->
@@ -251,7 +251,7 @@
     <script>
         $(document).ready(function(){
             var currend_code = '{{ get_system_currency()->code }}';
-            var amount = 'single_price($combined_order->grand_total) }}';
+            var amount = '{{ single_price($combined_order->grand_total) }}';
             fbq('track', 'Purchase',
                 {
                     value: amount,
@@ -264,4 +264,4 @@
     <!-- Facebook Pixel purchase Event -->
     @endif
 @endsection
-        
+

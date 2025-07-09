@@ -102,12 +102,12 @@
     @endif
 
     <!-- Postal code -->
-    <div class="row">
+    <div class="row d-none">
         <div class="col-md-2 mt-md-2">
             <label>{{ translate('Postal code')}}</label>
         </div>
         <div class="col-md-10">
-            <input type="text" class="form-control mb-3 rounded-0" placeholder="{{ translate('Your Postal Code')}}" name="postal_code" value="" required>
+            <input type="hidden" class="form-control mb-3 rounded-0" placeholder="{{ translate('Your Postal Code')}}" name="postal_code" value="0">
         </div>
     </div>
 
@@ -171,7 +171,7 @@
             var state_id = $(this).val();
             get_city(state_id);
         });
-        
+
         function get_states(country_id) {
             $('[name="state"]').html("");
             $.ajax({
@@ -216,10 +216,10 @@
 
     </script>
 
-    
+
     @if (get_setting('google_map') == 1)
         @include('frontend.'.get_setting('homepage_select').'.partials.google_map')
     @endif
 
-    
+
 @endsection

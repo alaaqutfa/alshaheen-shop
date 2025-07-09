@@ -4,7 +4,7 @@
     <h4 class="text-center text-muted">{{ translate('System') }}</h4>
     <div class="row">
         <div class="col-lg-4">
-            <div class="card  m-185">
+            <div class="card">
                 <div class="card-header">
                     <h5 class="mb-0 h6 text-center">{{ translate('HTTPS Activation') }}</h5>
                 </div>
@@ -19,7 +19,7 @@
             </div>
         </div>
         <div class="col-lg-4">
-            <div class="card  m-185">
+            <div class="card">
                 <div class="card-header">
                     <h3 class="mb-0 h6 text-center">{{ translate('Maintenance Mode Activation') }}</h3>
                 </div>
@@ -34,7 +34,7 @@
             </div>
         </div>
         <div class="col-lg-4">
-            <div class="card  m-185">
+            <div class="card">
                 <div class="card-header">
                     <h3 class="mb-0 h6 text-center">{{ translate('Disable image encoding?') }}</h3>
                 </div>
@@ -51,27 +51,11 @@
         </div>
     </div>
 
+
     <h4 class="text-center text-muted mt-4">{{ translate('Business Related') }}</h4>
     <div class="row">
         <div class="col-lg-4">
-            <div class="card  m-185">
-                <div class="card-header">
-                    <h3 class="mb-0 h6 text-center">{{ translate('Payment after adding the shipping cost') }}</h3>
-                </div>
-                <div class="card-body text-center">
-                    <label class="aiz-switch aiz-switch-success mb-0">
-                        <input type="checkbox" onchange="updateSettings(this, 'MANUAL_PAYMENT')" @if (env('MANUAL_PAYMENT')) checked @endif>
-                        <span class="slider round"></span>
-                    </label>
-                    <div class="alert"
-                        style="color: #004085;background-color: #cce5ff;border-color: #b8daff;margin-bottom:0;margin-top:10px;">
-                        {{ translate('If you turn off the payment process  will be immediately after the order') }}.
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-4">
-            <div class="card  m-185">
+            <div class="card">
                 <div class="card-header">
                     <h3 class="mb-0 h6 text-center">{{ translate('Vendor System Activation') }}</h3>
                 </div>
@@ -87,7 +71,7 @@
             </div>
         </div>
         <div class="col-lg-4">
-            <div class="card  m-185">
+            <div class="card">
                 <div class="card-header">
                     <h3 class="mb-0 h6 text-center">{{ translate('Classified Product') }}</h3>
                 </div>
@@ -102,7 +86,7 @@
             </div>
         </div>
         <div class="col-lg-4">
-            <div class="card  m-185">
+            <div class="card">
                 <div class="card-header">
                     <h3 class="mb-0 h6 text-center">{{ translate('Wallet System Activation') }}</h3>
                 </div>
@@ -117,7 +101,7 @@
             </div>
         </div>
         <div class="col-lg-4">
-            <div class="card  m-185">
+            <div class="card">
                 <div class="card-header">
                     <h3 class="mb-0 h6 text-center">{{ translate('Coupon System Activation') }}</h3>
                 </div>
@@ -132,7 +116,7 @@
             </div>
         </div>
         <div class="col-lg-4">
-            <div class="card  m-185">
+            <div class="card">
                 <div class="card-header">
                     <h3 class="mb-0 h6 text-center">{{ translate('Pickup Point Activation') }}</h3>
                 </div>
@@ -147,7 +131,7 @@
             </div>
         </div>
         <div class="col-lg-4">
-            <div class="card  m-185">
+            <div class="card">
                 <div class="card-header">
                     <h3 class="mb-0 h6 text-center">{{ translate('Conversation Activation') }}</h3>
                 </div>
@@ -162,7 +146,7 @@
             </div>
         </div>
         <div class="col-lg-4">
-            <div class="card  m-185">
+            <div class="card">
                 <div class="card-header">
                     <h3 class="mb-0 h6 text-center">{{ translate('Seller Product Manage By Admin') }}</h3>
                 </div>
@@ -182,7 +166,7 @@
             </div>
         </div>
         <div class="col-lg-4">
-            <div class="card  m-185">
+            <div class="card">
                 <div class="card-header">
                     <h3 class="mb-0 h6 text-center">{{ translate('Admin Approval On Seller Product') }}</h3>
                 </div>
@@ -202,7 +186,7 @@
             </div>
         </div>
         <div class="col-lg-4">
-            <div class="card  m-185">
+            <div class="card">
                 <div class="card-header">
                     <h3 class="mb-0 h6 text-center">{{ translate('Email Verification') }}</h3>
                 </div>
@@ -222,7 +206,7 @@
             </div>
         </div>
         <div class="col-lg-4">
-            <div class="card  m-185">
+            <div class="card">
                 <div class="card-header">
                     <h3 class="mb-0 h6 text-center">{{ translate('Product Query Activation') }}</h3>
                 </div>
@@ -239,7 +223,7 @@
         </div>
 
         <div class="col-lg-4">
-            <div class="card  m-185">
+            <div class="card">
                 <div class="card-header">
                     <h3 class="mb-0 h6 text-center">{{ translate('Last Viewed Products Activation') }}</h3>
                 </div>
@@ -256,7 +240,7 @@
         </div>
 
         <div class="col-lg-4">
-            <div class="card  m-185">
+            <div class="card">
                 <div class="card-header">
                     <h3 class="mb-0 h6 text-center">{{ translate('Guest Checkout Activation') }}</h3>
                 </div>
@@ -279,7 +263,7 @@
 
         @if (addon_is_activated('wholesale'))
             <div class="col-lg-4">
-                <div class="card  m-185">
+                <div class="card">
                     <div class="card-header">
                         <h3 class="mb-0 h6 text-center">{{ translate('Wholesale Product for Seller') }}</h3>
                     </div>
@@ -297,7 +281,7 @@
         @endif
         @if (addon_is_activated('auction'))
             <div class="col-lg-4">
-                <div class="card  m-185">
+                <div class="card">
                     <div class="card-header">
                         <h3 class="mb-0 h6 text-center">{{ translate('Auction Product for Seller') }}</h3>
                     </div>
@@ -318,7 +302,7 @@
     <h4 class="text-center text-muted mt-4">{{ translate('Social Media Login') }}</h4>
     <div class="row">
         <div class="col-lg-4">
-            <div class="card  m-185">
+            <div class="card">
                 <div class="card-header">
                     <h3 class="mb-0 h6 text-center">{{ translate('Facebook login') }}</h3>
                 </div>
@@ -338,7 +322,7 @@
             </div>
         </div>
         <div class="col-lg-4">
-            <div class="card  m-185">
+            <div class="card">
                 <div class="card-header">
                     <h3 class="mb-0 h6 text-center">{{ translate('Google login') }}</h3>
                 </div>
@@ -358,7 +342,7 @@
             </div>
         </div>
         <div class="col-lg-4">
-            <div class="card  m-185">
+            <div class="card">
                 <div class="card-header">
                     <h3 class="mb-0 h6 text-center">{{ translate('Twitter login') }}</h3>
                 </div>
@@ -378,7 +362,7 @@
             </div>
         </div>
         <div class="col-lg-4">
-            <div class="card  m-185">
+            <div class="card">
                 <div class="card-header">
                     <h3 class="mb-0 h6 text-center">{{ translate('Apple login') }}</h3>
                 </div>

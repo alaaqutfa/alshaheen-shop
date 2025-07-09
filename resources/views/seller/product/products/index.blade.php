@@ -25,13 +25,13 @@
             </div>
         @endif
 
-        <div class="col-md-4 mx-auto mb-3" style="color: dimgray">
-            <a href="{{ route('seller.products.create')}}" >
+        <div class="col-md-4 mx-auto mb-3" >
+            <a href="{{ route('seller.products.create')}}">
               <div class="p-3 rounded mb-3 c-pointer text-center bg-white shadow-sm hov-shadow-lg has-transition">
-                  <span class="size-60px rounded-circle mx-auto bg-secondary d-flex align-items-center justify-content-center mb-3" >
+                  <span class="size-60px rounded-circle mx-auto bg-secondary d-flex align-items-center justify-content-center mb-3">
                       <i class="las la-plus la-3x text-white"></i>
                   </span>
-                  <div class="fs-18 text-primary" style="background-color: #d3d3d3;">{{ translate('Add New Product') }}</div>
+                  <div class="fs-18 text-primary">{{ translate('Add New Product') }}</div>
               </div>
             </a>
         </div>
@@ -95,6 +95,7 @@
                             {{-- <th data-breakpoints="md">{{ translate('Category')}}</th> --}}
                             <th data-breakpoints="md">{{ translate('Current Qty')}}</th>
                             <th>{{ translate('Base Price')}}</th>
+                            <th>{{ translate('Cost Price')}}</th>
                             @if(get_setting('product_approve_by_admin') == 1)
                                 <th data-breakpoints="md">{{ translate('Approval')}}</th>
                             @endif
@@ -134,7 +135,8 @@
                                         echo $qty;
                                     @endphp
                                 </td>
-                                <td>{{ convert_price($product->unit_price) }}</td>
+                                <td>{{ $product->unit_price }}</td>
+                                <td>{{ $product->wholesale_price }}</td>
                                 @if(get_setting('product_approve_by_admin') == 1)
                                     <td>
                                         @if ($product->approved == 1)

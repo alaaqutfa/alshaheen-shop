@@ -1,7 +1,7 @@
 <?php
-
 namespace App\Http\Controllers\Api\V2\Seller;
 
+use App\Http\Controllers\Api\V2\Seller\ShopController;
 use Route;
 
 Route::group(['prefix' => 'v2/seller', 'middleware' => ['app_language']], function () {
@@ -41,6 +41,7 @@ Route::group(['prefix' => 'v2/seller', 'middleware' => ['app_language']], functi
             Route::post('refunds/approve', 'request_approval_vendor');
             Route::post('refunds/reject', 'reject_refund_request');
         });
+
         //Withdraw Request Section
         Route::controller(WithdrawRequestController::class)->group(function () {
             Route::get('withdraw-request', 'index');
@@ -63,12 +64,9 @@ Route::group(['prefix' => 'v2/seller', 'middleware' => ['app_language']], functi
             Route::get('product/duplicate/{id}', 'duplicate');
             Route::get('product/delete/{id}', 'destroy');
             Route::get('products/remaining-uploads', 'remainingUploads');
-
             Route::get('products/reviews', 'product_reviews');
             Route::post('product/search', 'productSearch');
-
         });
-
 
         //Product Query Section
         Route::controller(ProductQueryController::class)->group(function () {
@@ -76,9 +74,10 @@ Route::group(['prefix' => 'v2/seller', 'middleware' => ['app_language']], functi
             Route::get('products/query-show/{id}', 'product_queries_show');
             Route::post('products/query-reply/{id}', 'product_queries_reply');
         });
+
         // Digital Product Section
         Route::controller(DigitalProductController::class)->group(function () {
-            Route::get('digital-products', 'index'); 
+            Route::get('digital-products', 'index');
             Route::get('digital-products/categories', 'getCategory');
             Route::post('digital-products/store', 'store');
             Route::get('digital-products/edit/{id}', 'edit');
@@ -120,28 +119,26 @@ Route::group(['prefix' => 'v2/seller', 'middleware' => ['app_language']], functi
             Route::get('coupon/for-product', 'coupon_for_product');
         });
 
-        //Conversations 
+        //Conversations
         Route::controller(ConversationController::class)->group(function () {
             Route::get('conversations', 'index');
             Route::get('conversations/show/{id}', 'showMessages');
             Route::post('conversations/message/store', 'send_message_to_customer');
         });
 
-        //Seller Package 
+        //Seller Package
         Route::controller(SellerPackageController::class)->group(function () {
             Route::get('seller-packages-list', 'seller_packages_list');
             Route::post('seller-package/offline-payment', 'purchase_package_offline');
             Route::post('seller-package/free-package', 'purchase_free_package');
         });
 
-        //Seller File Upload 
+        //Seller File Upload
         Route::controller(SellerFileUploadController::class)->group(function () {
             Route::post('file/upload', 'upload');
             Route::get('file/all', 'index');
             Route::get('file/delete/{id}', 'destroy');
         });
-
-        // ...
 
         // POS
         Route::controller(PosController::class)->group(function () {
@@ -157,10 +154,10 @@ Route::group(['prefix' => 'v2/seller', 'middleware' => ['app_language']], functi
             Route::post('pos/user-cart-data', 'getUserCartData');
             Route::get('pos/configuration', 'posConfiguration');
             Route::post('pos/configuration/update', 'posConfigurationUpdate');
-            
         });
 
     });
 
-    // Route::post('shops/create', [ShopController::class, 'store']);
+    Route::get('create', [ShopController::class, 'create']);
+    Route::post('register', [ShopController::class, 'store']);
 });

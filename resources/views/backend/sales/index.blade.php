@@ -15,10 +15,12 @@
                         </button>
                         <div class="dropdown-menu dropdown-menu-right">
                             @can('delete_order')
-                                <a class="dropdown-item confirm-alert" href="javascript:void(0)"  data-target="#bulk-delete-modal">{{ translate('Delete selection') }}</a>
+                                <a class="dropdown-item confirm-alert" href="javascript:void(0)"
+                                    data-target="#bulk-delete-modal">{{ translate('Delete selection') }}</a>
                             @endcan
                             @can('export_order')
-                                <a class="dropdown-item" href="javascript:void(0)" onclick="order_bulk_export()">{{ translate('Export') }}</a>
+                                <a class="dropdown-item" href="javascript:void(0)"
+                                    onclick="order_bulk_export()">{{ translate('Export') }}</a>
                             @endcan
                         </div>
                     </div>
@@ -96,11 +98,14 @@
                             <th data-breakpoints="md">{{ translate('Num. of Products') }}</th>
                             <th data-breakpoints="md">{{ translate('Customer') }}</th>
                             <th data-breakpoints="md">{{ translate('Seller') }}</th>
-                            <th data-breakpoints="md">{{ translate('Amount') }}</th>
+                            <th data-breakpoints="md">{{ translate('total_order') }}</th>
+                            @if (get_setting('vendor_commission_activation'))
+                                <th data-breakpoints="md">{{ translate('due_to_seller') }}</th>
+                                <th data-breakpoints="md">{{ translate('commission') }}</th>
+                            @endif
                             <th data-breakpoints="md">{{ translate('Delivery Status') }}</th>
                             <th data-breakpoints="md">{{ translate('Payment method') }}</th>
                             <th data-breakpoints="md">{{ translate('Payment Status') }}</th>
-                            <th data-breakpoints="md">{{ translate('Shipping Cost Status') }}</th>
                             @if (addon_is_activated('refund_request'))
                                 <th>{{ translate('Refund') }}</th>
                             @endif
@@ -109,6 +114,23 @@
                     </thead>
                     <tbody>
                         @foreach ($orders as $key => $order)
+                            @php
+                                $grand_total = $order->grand_total;
+                                $seller_earning = 0;
+                                $admin_commission = 0;
+                                $customer_commission = 0;
+                                if (get_setting('vendor_commission_activation') && $order->commission_calculated) {
+                                    $orderCommissions = \App\Models\CommissionHistory::where(
+                                        'order_id',
+                                        $order->id,
+                                    )->get();
+                                    foreach ($orderCommissions as $key => $orderCommission) {
+                                        $admin_commission += $orderCommission->admin_commission;
+                                        $seller_earning += $orderCommission->seller_earning;
+                                    }
+                                    $customer_commission = $order->grand_total - ($seller_earning + $admin_commission);
+                                }
+                            @endphp
                             <tr>
                                 @if (auth()->user()->can('delete_order') || auth()->user()->can('export_order'))
                                     <td>
@@ -152,8 +174,27 @@
                                     @endif
                                 </td>
                                 <td>
-                                    {{ single_price($order->grand_total) }}
+                                    {{ single_price($grand_total) }}
                                 </td>
+                                @if (get_setting('vendor_commission_activation'))
+                                    @if ($order->commission_calculated)
+                                        <td>
+                                            {{ single_price($seller_earning) }}
+                                        </td>
+                                        <td>
+                                            @if ($customer_commission > 0)
+                                                {{ translate('admin_commission') }} = {{ single_price($admin_commission) }}
+                                                {{ translate('customer_commission') }} = {{ single_price($customer_commission) }}
+                                                {{ translate('total_commission') }} = {{ single_price($admin_commission + $customer_commission) }}
+                                            @else
+                                                {{ single_price($admin_commission) }}
+                                            @endif
+                                        </td>
+                                    @else
+                                        <td>{{ translate('Not calculated') }}</td>
+                                        <td>{{ translate('Not calculated') }}</td>
+                                    @endif
+                                @endif
                                 <td>
                                     {{ translate(ucfirst(str_replace('_', ' ', $order->delivery_status))) }}
                                 </td>
@@ -167,15 +208,6 @@
                                         <span class="badge badge-inline badge-danger">{{ translate('Unpaid') }}</span>
                                     @endif
                                 </td>
-
-                                <td>
-                                    @if ($order->shipping_cost_status)
-                                        <span class="badge badge-inline badge-success">{{ translate('Modified') }}</span>
-                                    @else
-                                        <span class="badge badge-inline badge-danger">{{ translate('Not Modified') }}</span>
-                                    @endif
-                                </td>
-
                                 @if (addon_is_activated('refund_request'))
                                     <td>
                                         @if (count($order->refund_requests) > 0)
@@ -193,22 +225,16 @@
                                             <i class="las la-print"></i>
                                         </a>
                                     @endif
-                                    <!---->
-                                    @can('delete_order')
-                                        <a href="{{ route('orders.edit', $order->id) }}"
-                                            class="btn btn-soft-warning btn-icon btn-circle btn-sm"
-                                            title="{{ translate('Edit') }}">
-                                            <i class="las la-edit"></i>
-                                        </a>
-                                    @endcan
-                                    <!---->
                                     @can('view_order_details')
                                         @php
                                             $order_detail_route = route('orders.show', encrypt($order->id));
                                             if (Route::currentRouteName() == 'seller_orders.index') {
                                                 $order_detail_route = route('seller_orders.show', encrypt($order->id));
                                             } elseif (Route::currentRouteName() == 'pick_up_point.index') {
-                                                $order_detail_route = route('pick_up_point.order_show', encrypt($order->id));
+                                                $order_detail_route = route(
+                                                    'pick_up_point.order_show',
+                                                    encrypt($order->id),
+                                                );
                                             }
                                             if (Route::currentRouteName() == 'inhouse_orders.index') {
                                                 $order_detail_route = route('inhouse_orders.show', encrypt($order->id));
@@ -232,7 +258,6 @@
                                             <i class="las la-trash"></i>
                                         </a>
                                     @endcan
-
                                 </td>
                             </tr>
                         @endforeach
@@ -291,8 +316,8 @@
             });
         }
 
-        function order_bulk_export (){
-            var url = '{{route('order-bulk-export')}}';
+        function order_bulk_export() {
+            var url = '{{ route('order-bulk-export') }}';
             $("#sort_orders").attr("action", url);
             $('#sort_orders').submit();
             $("#sort_orders").attr("action", '');

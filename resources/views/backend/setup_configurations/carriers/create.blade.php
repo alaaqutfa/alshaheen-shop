@@ -116,7 +116,7 @@
                                             </div>
                                         </td>
                                     </tr>
-
+                                    
                                     @foreach ($zones as $zone)
                                         <tr>
                                             <td>
@@ -138,13 +138,13 @@
                                             </td>
                                         </tr>
                                     @endforeach
-                                    
+
                                     <tr>
                                         <td></td>
                                         <td></td>
                                         <td></td>
                                     </tr>
-                                    
+
                                 </tbody>
 
                             </table>
@@ -211,7 +211,7 @@
             // console.log(tdlenght);
 
 
-            // last td input 
+            // last td input
             var first_lasttd = $("#price-range-table").find("tr:nth-child(1)").find("td:last").find("input").val();
             var second_lasttd = $("#price-range-table").find("tr:nth-child(2)").find("td:last").find("input").val();
 
@@ -250,9 +250,9 @@
         }
 
         $("#carrier-submit-btn").click(function() {
-            
+
             var data = new FormData($('#carrier-form')[0]);
-            if(!$('input[name=shipping_type]').prop('checked')){
+            if (!$('input[name=shipping_type]').prop('checked')) {
                 var delimiter1 = $('.delimiter1');
                 var delimiter2 = $('.delimiter2');
 
@@ -263,7 +263,7 @@
                             delimiter2[i].focus();
                             return false
                         }
-                        if (i>0 && (parseFloat(delimiter1[i].value) != parseFloat(delimiter2[(i-1)].value))) {
+                        if (i > 0 && (parseFloat(delimiter1[i].value) != parseFloat(delimiter2[(i - 1)].value))) {
                             alert('Please put the first range equal to the previous last range.');
                             delimiter1[(i)].focus();
                             return false
@@ -271,7 +271,7 @@
                     }
                 }
             }
-            
+
             $.ajax({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -293,8 +293,10 @@
                 $.each(jqXHR.responseJSON.errors, function(key, value) {
                     $(".print-error-msg").find("ul").append('<li>' + value[0] + '</li>');
                 });
-                
-                $("html, body").animate({scrollTop: 0}, 800);
+
+                $("html, body").animate({
+                    scrollTop: 0
+                }, 800);
             });
         })
     </script>

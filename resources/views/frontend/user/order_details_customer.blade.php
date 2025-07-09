@@ -38,9 +38,7 @@
                             <td class="w-50 fw-600">{{ translate('Shipping address') }}:</td>
                             <td>{{ json_decode($order->shipping_address)->address }},
                                 {{ json_decode($order->shipping_address)->city }},
-                                @if (isset(json_decode($order->shipping_address)->state))
-                                    {{ json_decode($order->shipping_address)->state }} -
-                                @endif
+                                @if(isset(json_decode($order->shipping_address)->state)) {{ json_decode($order->shipping_address)->state }} - @endif
                                 {{ json_decode($order->shipping_address)->postal_code }},
                                 {{ json_decode($order->shipping_address)->country }}
                             </td>
@@ -88,7 +86,7 @@
 
     <!-- Order Details -->
     <div class="row gutters-16">
-        <div class="col-lg-9">
+        <div class="col-md-9">
             <div class="card rounded-0 shadow-none border mt-2 mb-4">
                 <div class="card-header border-bottom-0">
                     <h5 class="fs-16 fw-700 text-dark mb-0">{{ translate('Order Details') }}</h5>
@@ -112,7 +110,7 @@
                         <tbody class="fs-14">
                             @foreach ($order->orderDetails as $key => $orderDetail)
                                 <tr>
-                                    <td class="pl-0">{{ sprintf('%02d', $key + 1) }}</td>
+                                    <td class="pl-0">{{ sprintf('%02d', $key+1) }}</td>
                                     <td>
                                         @if ($orderDetail->product != null && $orderDetail->product->auction_product == 0)
                                             <a href="{{ route('product', $orderDetail->product->slug) }}"
@@ -143,7 +141,7 @@
                                             @if ($order->carrier != null)
                                                 {{ $order->carrier->name }} ({{ translate('Carrier') }})
                                                 <br>
-                                                {{ translate('Transit Time') . ' - ' . $order->carrier->transit_time }}
+                                                {{ translate('Transit Time').' - '.$order->carrier->transit_time }}
                                             @else
                                                 {{ translate('Carrier') }}
                                             @endif
@@ -157,13 +155,7 @@
                                             $today_date = Carbon\Carbon::now();
                                         @endphp
                                         <td>
-                                            @if (
-                                                $orderDetail->product != null &&
-                                                    $orderDetail->product->refundable != 0 &&
-                                                    $orderDetail->refund_request == null &&
-                                                    $today_date <= $last_refund_date &&
-                                                    $orderDetail->payment_status == 'paid' &&
-                                                    $orderDetail->delivery_status == 'delivered')
+                                            @if ($orderDetail->product != null && $orderDetail->product->refundable != 0 && $orderDetail->refund_request == null && $today_date <= $last_refund_date && $orderDetail->payment_status == 'paid' && $orderDetail->delivery_status == 'delivered')
                                                 <a href="{{ route('refund_request_send_page', $orderDetail->id) }}"
                                                     class="btn btn-primary btn-sm rounded-0">{{ translate('Send') }}</a>
                                             @elseif ($orderDetail->refund_request != null && $orderDetail->refund_request->refund_status == 0)
@@ -197,7 +189,7 @@
         </div>
 
         <!-- Order Ammount -->
-        <div class="col-lg-3 p-0">
+        <div class="col-md-3">
             <div class="card rounded-0 shadow-none border mt-2">
                 <div class="card-header border-bottom-0">
                     <b class="fs-16 fw-700 text-dark">{{ translate('Order Ammount') }}</b>
@@ -205,55 +197,30 @@
                 <div class="card-body pb-0">
                     <table class="table-borderless table">
                         <tbody>
-                            <!-- Subtotal -->
                             <tr>
                                 <td class="w-50 fw-600">{{ translate('Subtotal') }}</td>
                                 <td class="text-right">
                                     <span class="strong-600">{{ single_price($order->orderDetails->sum('price')) }}</span>
                                 </td>
                             </tr>
-
-                            <!-- 5% Tax -->
-                            <tr>
-                                <td class="w-50 fw-600">{{ translate('5% Tax') }}</td>
-                                <td class="text-right">
-                                    <span
-                                        class="text-italic">{{ single_price($order->orderDetails->sum('price') * 0.05) }}</span>
-                                </td>
-                            </tr>
-
-                            <!-- 15% Customs and Clearance Fees -->
-                            <tr>
-                                <td class="w-50 fw-600">
-                                    {{ translate('15% Customs and') }}<br>{{ translate('Clearance Fees') }}
-                                </td>
-                                <td class="text-right">
-                                    <span
-                                        class="text-italic">{{ single_price($order->orderDetails->sum('price') * 0.15) }}</span>
-                                </td>
-                            </tr>
-
-
-
-                            <!-- Shipping -->
                             <tr>
                                 <td class="w-50 fw-600">{{ translate('Shipping') }}</td>
                                 <td class="text-right">
-                                    {{-- <span class="text-italic">{{ single_price($order->orderDetails->first()->shipping_cost) --}}
-
-                                    <span class="text-italic">{{ single_price($order->shipping_cost) }}</span>
+                                    <span class="text-italic">{{ single_price($order->orderDetails->sum('shipping_cost')) }}</span>
                                 </td>
                             </tr>
-
-                            <!-- Coupon -->
+                            <tr>
+                                <td class="w-50 fw-600">{{ translate('Tax') }}</td>
+                                <td class="text-right">
+                                    <span class="text-italic">{{ single_price($order->orderDetails->sum('tax')) }}</span>
+                                </td>
+                            </tr>
                             <tr>
                                 <td class="w-50 fw-600">{{ translate('Coupon') }}</td>
                                 <td class="text-right">
                                     <span class="text-italic">{{ single_price($order->coupon_discount) }}</span>
                                 </td>
                             </tr>
-
-                            <!-- Total -->
                             <tr>
                                 <td class="w-50 fw-600">{{ translate('Total') }}</td>
                                 <td class="text-right">
@@ -261,20 +228,19 @@
                                 </td>
                             </tr>
                         </tbody>
-
                     </table>
                 </div>
             </div>
-            <!-- Make Payment -->
-            @if ($order->shipping_cost_status && $order->payment_status == 'unpaid')
-                <form action="{{ route('order.re_payment') }}" method="post">
-                    @csrf
-                    <input type="hidden" name="order_id" value="{{ $order->id }}" />
-                    <input type="hidden" name="payment_option" value="{{ $order->payment_type }}" />
-                    <button type="submit" class="btn btn-block btn-primary">
-                        {{ translate('Make Payment') }}
-                    </button>
-                </form>
+            @if ($order->payment_status == 'unpaid' && $order->delivery_status == 'pending' && $order->manual_payment == 0)
+                <button
+                    @if(addon_is_activated('offline_payment'))
+                        onclick="select_payment_type({{ $order->id }})"
+                    @else
+                        onclick="online_payment({{ $order->id }})"
+                    @endif
+                    class="btn btn-block btn-primary">
+                    {{ translate('Make Payment') }}
+                </button>
             @endif
         </div>
     </div>
@@ -291,8 +257,7 @@
     </div>
 
     <!-- Select Payment Type Modal -->
-    <div class="modal fade" id="payment_type_select_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
+    <div class="modal fade" id="payment_type_select_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -307,8 +272,8 @@
                         </div>
                         <div class="col-md-10">
                             <div class="mb-3">
-                                <select class="form-control aiz-selectpicker rounded-0"
-                                    onchange="payment_modal(this.value)" data-minimum-results-for-search="Infinity">
+                                <select class="form-control aiz-selectpicker rounded-0" onchange="payment_modal(this.value)"
+                                    data-minimum-results-for-search="Infinity">
                                     <option value="">{{ translate('Select One') }}</option>
                                     <option value="online">{{ translate('Online payment') }}</option>
                                     <option value="offline">{{ translate('Offline payment') }}</option>
@@ -326,8 +291,7 @@
     </div>
 
     <!-- Online payment Modal -->
-    <div class="modal fade" id="online_payment_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
+    <div class="modal fade" id="online_payment_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -335,7 +299,8 @@
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body gry-bg px-3 pt-3" style="overflow-y: inherit;">
-                    <form class="" action="{{ route('order.re_payment') }}" method="post">
+                    <form class="" action="{{ route('order.re_payment') }}"
+                        method="post">
                         @csrf
                         <input type="hidden" name="order_id" value="{{ $order->id }}">
                         <div class="row">
@@ -343,15 +308,14 @@
                                 <label>{{ translate('Payment Method') }}</label>
                             </div>
                             <div class="col-md-10">
-                                <div class="mb-3">
-                                    <select class="form-control selectpicker rounded-0" data-live-search="true"
-                                        name="payment_option" required>
-                                        @include('partials.online_payment_options')
-                                        @if (get_setting('wallet_system') == 1 && auth()->user()->balance >= $order->grand_total)
-                                            <option value="wallet">{{ translate('Wallet') }}</option>
-                                        @endif
-                                    </select>
-                                </div>
+                            <div class="mb-3">
+                                <select class="form-control selectpicker rounded-0" data-live-search="true" name="payment_option" required>
+                                    @include('partials.online_payment_options')
+                                    @if (get_setting('wallet_system') == 1 && (auth()->user()->balance >= $order->grand_total))
+                                        <option value="wallet">{{ translate('Wallet') }}</option>
+                                    @endif
+                                </select>
+                            </div>
                             </div>
                         </div>
 
@@ -380,11 +344,13 @@
             </div>
         </div>
     </div>
+
 @endsection
 
 
 @section('script')
     <script type="text/javascript">
+
         function product_review(product_id) {
             $.post('{{ route('product_review_modal') }}', {
                 _token: '{{ @csrf_token() }}',
@@ -422,5 +388,6 @@
             $('input[name=customer_package_id]').val();
             $('#online_payment_modal').modal('show');
         }
+
     </script>
 @endsection

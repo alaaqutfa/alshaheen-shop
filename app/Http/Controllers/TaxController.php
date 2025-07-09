@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Models\Category;
 use App\Models\Tax;
+use Illuminate\Http\Request;
 
 class TaxController extends Controller
 {
@@ -21,7 +22,10 @@ class TaxController extends Controller
     public function index()
     {
         $all_taxes = Tax::orderBy('created_at', 'desc')->get();
-        return view('backend.setup_configurations.tax.index', compact('all_taxes'));
+        $allcategories = Category::where('level', 0)->get();
+        $categories = Category::where('digital', 0)->where('level', 0)->get();
+        $services = Category::where('digital', 1)->where('level', 0)->get();
+        return view('backend.setup_configurations.tax.index', compact('all_taxes', 'allcategories', 'categories', 'services'));
     }
 
     /**
@@ -44,7 +48,16 @@ class TaxController extends Controller
     {
         $tax = new Tax;
         $tax->name = $request->name;
-        //        $pickup_point->address = $request->address;
+        $tax->type = $request->type;
+        $tax->tax_type = $request->tax_type;
+        $tax->tax_value = $request->tax_value;
+        // $pickup_point->address = $request->address;
+
+        if ($request->type === 'physical') {
+            $tax->tax_category = $request->category_id;
+        } else {
+            $tax->tax_category = $request->service_id;
+        }
 
         if ($tax->save()) {
 
@@ -76,7 +89,10 @@ class TaxController extends Controller
     public function edit($id)
     {
         $tax = Tax::findOrFail($id);
-        return view('backend.setup_configurations.tax.edit', compact('tax'));
+        $allcategories = Category::where('level', 0)->get();
+        $categories = Category::where('digital', 0)->where('level', 0)->get();
+        $services = Category::where('digital', 1)->where('level', 0)->get();
+        return view('backend.setup_configurations.tax.edit', compact('tax','allcategories','categories','services'));
     }
 
     /**
@@ -90,7 +106,18 @@ class TaxController extends Controller
     {
         $tax = Tax::findOrFail($id);
         $tax->name = $request->name;
+        $tax->type = $request->type;
+        $tax->tax_category = $request->tax_category;
+        $tax->tax_type = $request->tax_type;
+        $tax->tax_value = $request->tax_value;
         //        $language->code = $request->code;
+
+        if ($request->type === 'physical') {
+            $tax->tax_category = $request->category_id;
+        } else {
+            $tax->tax_category = $request->service_id;
+        }
+
         if ($tax->save()) {
             flash(translate('Tax has been updated successfully'))->success();
             return redirect()->route('tax.index');

@@ -19,11 +19,10 @@
     <link rel="apple-touch-icon" href="{{ uploaded_asset(get_setting('site_icon')) }}">
     <title>{{ get_setting('website_name') . ' | ' . get_setting('site_motto') }}</title>
 
-    <!-- google font -->
-    {{-- <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700"> --}}
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap">
+    <link href="{{ static_asset('assets/css/tajwal.css') }}" rel="stylesheet">
 
     <!-- aiz core css -->
     <link rel="stylesheet" href="{{ static_asset('assets/css/vendors.css') }}">
@@ -61,8 +60,8 @@
             --soft-secondary-base: rgb(241, 65, 108, 0.15);
         }
         body {
-            font-size: 12px;
-            font-family: 'Public Sans', sans-serif;
+            font-size: 16px;
+            font-family: 'Tajawal', sans-serif;
         }
         /* .bootstrap-select .btn,
         .btn:not(.btn-circle),
@@ -90,9 +89,6 @@
         .form-control.file-amount{
             border-top-right-radius: 4px !important;
             border-bottom-right-radius: 4px !important;
-        }
-        .m-185 {
-            height: 185px;
         }
     </style>
     <script>

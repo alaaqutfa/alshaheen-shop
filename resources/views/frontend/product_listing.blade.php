@@ -42,7 +42,7 @@
                 <div class="row">
 
                     <!-- Sidebar Filters -->
-                    <div class="col-xl-3">
+                    {{-- <div class="col-xl-3">
                         <div class="aiz-filter-sidebar collapse-sidebar-wrap sidebar-xl sidebar-right z-1035">
                             <div class="overlay overlay-fixed dark c-pointer" data-toggle="class-toggle" data-target=".aiz-filter-sidebar" data-same=".filter-sidebar-thumb"></div>
                             <div class="collapse-sidebar c-scrollbar-light text-left">
@@ -77,7 +77,7 @@
                                                         {{ translate('All Categories')}}
                                                     </a>
                                                 </li>
-                                                
+
                                                 @if ($category->parent_id != 0)
                                                     <li class="mb-3">
                                                         <a class="text-reset fs-14 fw-600 hov-text-primary" href="{{ route('products.category', get_single_category($category->parent_id)->slug) }}">
@@ -152,12 +152,12 @@
                                     <input type="hidden" name="min_price" value="">
                                     <input type="hidden" name="max_price" value="">
                                 </div>
-                                
+
                                 <!-- Attributes -->
                                 @foreach ($attributes as $attribute)
                                     <div class="bg-white border mb-3">
                                         <div class="fs-16 fw-700 p-3">
-                                            <a href="#" class="dropdown-toggle text-dark filter-section collapsed d-flex align-items-center justify-content-between" 
+                                            <a href="#" class="dropdown-toggle text-dark filter-section collapsed d-flex align-items-center justify-content-between"
                                                 data-toggle="collapse" data-target="#collapse_{{ str_replace(' ', '_', $attribute->name) }}" style="white-space: normal;">
                                                 {{ $attribute->getTranslation('name') }}
                                             </a>
@@ -188,7 +188,7 @@
                                         </div>
                                     </div>
                                 @endforeach
-                                    
+
                                 <!-- Color -->
                                 @if (get_setting('color_filter_activation'))
                                     <div class="bg-white border mb-3">
@@ -227,11 +227,11 @@
                                 @endif
                             </div>
                         </div>
-                    </div>
-                    
+                    </div> --}}
+
                     <!-- Contents -->
-                    <div class="col-xl-9">
-                        
+                    <div class="col-xl-12">
+
                         <!-- Breadcrumb -->
                         <ul class="breadcrumb bg-transparent py-0 px-1">
                             <li class="breadcrumb-item has-transition opacity-50 hov-opacity-100">
@@ -239,11 +239,11 @@
                             </li>
                             @if(!isset($category_id))
                                 <li class="breadcrumb-item fw-700  text-dark">
-                                    "{{ translate('All Categories')}}"
+                                    "{{ translate('All Products')}}"
                                 </li>
                             @else
                                 <li class="breadcrumb-item opacity-50 hov-opacity-100">
-                                    <a class="text-reset" href="{{ route('search') }}">{{ translate('All Categories')}}</a>
+                                    <a class="text-reset" href="{{ route('search') }}">{{ translate('All Products')}}</a>
                                 </li>
                             @endif
                             @if(isset($category_id))
@@ -252,7 +252,7 @@
                                 </li>
                             @endif
                         </ul>
-                        
+
                         <!-- Top Filters -->
                         <div class="text-left">
                             <div class="row gutters-5 flex-wrap align-items-center">
@@ -294,7 +294,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <!-- Products -->
                         <div class="px-3">
                             <div class="row gutters-16 row-cols-xxl-4 row-cols-xl-3 row-cols-lg-4 row-cols-md-3 row-cols-2 border-top border-left">

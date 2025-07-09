@@ -456,7 +456,7 @@
                                                 class="user-top-menu-name has-transition ml-3">{{ translate('Downloads') }}</span>
                                         </a>
                                     </li>
-                                    @if (get_setting('conversation_system') == 1)
+                                    {{-- @if (get_setting('conversation_system') == 1)
                                         <li class="user-top-nav-element border border-top-0" data-id="1">
                                             <a href="{{ route('conversations.index') }}"
                                                 class="text-truncate text-dark px-4 fs-14 d-flex align-items-center hov-column-gap-1">
@@ -482,7 +482,7 @@
                                                     class="user-top-menu-name has-transition ml-3">{{ translate('Conversations') }}</span>
                                             </a>
                                         </li>
-                                    @endif
+                                    @endif --}}
 
                                     @if (get_setting('wallet_system') == 1)
                                         <li class="user-top-nav-element border border-top-0" data-id="1">

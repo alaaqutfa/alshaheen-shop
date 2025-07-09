@@ -92,11 +92,11 @@
         <div class="d-flex align-items-center mr-4">
             <!-- Shop Name -->
             @if ($detailedProduct->added_by == 'seller' && get_setting('vendor_system_activation') == 1)
-                <!--<span class="text-secondary fs-14 fw-400 mr-4 w-80px">{{ translate('Sold by') }}</span>-->
-                <!--<a href="{{ route('shop.visit', $detailedProduct->user->shop->slug) }}"-->
-                <!--    class="text-reset hov-text-primary fs-14 fw-700">{{ $detailedProduct->user->shop->name }}</a>-->
+                <span class="text-secondary fs-14 fw-400 mr-4 w-80px">{{ translate('Sold by') }}</span>
+                <a href="{{ route('shop.visit', $detailedProduct->user->shop->slug) }}"
+                    class="text-reset hov-text-primary fs-14 fw-700">{{ $detailedProduct->user->shop->name }}</a>
             @else
-                <!--<p class="mb-0 fs-14 fw-700">{{ translate('Inhouse product') }}</p>-->
+                <p class="mb-0 fs-14 fw-700">{{ translate('Inhouse product') }}</p>
             @endif
         </div>
         <!-- Messase to seller -->
@@ -240,7 +240,7 @@
                             </del>
                             <!-- Unit -->
                             @if ($detailedProduct->unit != null)
-                                <span class="opacity-70 ml-1">/{{ $detailedProduct->getTranslation('unit') }}</span>
+                                <span class="opacity-70 ml-1 d-none">/{{ $detailedProduct->getTranslation('unit') }}</span>
                             @endif
                             <!-- Discount percentage -->
                             @if (discount_in_percentage($detailedProduct) > 0)
@@ -291,7 +291,7 @@
                             </strong>
                             <!-- Unit -->
                             @if ($detailedProduct->unit != null)
-                                <span class="opacity-70">/{{ $detailedProduct->getTranslation('unit') }}</span>
+                                <span class="opacity-70 d-none">/{{ $detailedProduct->getTranslation('unit') }}</span>
                             @endif
                             <!-- Club Point -->
                             @if (addon_is_activated('club_point') && $detailedProduct->earn_point > 0)

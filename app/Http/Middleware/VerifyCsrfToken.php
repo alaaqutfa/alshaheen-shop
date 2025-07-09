@@ -37,7 +37,5 @@ class VerifyCsrfToken extends Middleware
         '/rozer*',
         '/phonepe*',
         '/import-data',
-        '/magnati*',
-        '/telr*',
     ];
 }

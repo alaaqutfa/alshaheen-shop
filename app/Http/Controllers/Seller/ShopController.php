@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Seller;
 use App\Models\BusinessSetting;
 use Illuminate\Http\Request;
 use App\Models\Shop;
+use App\Models\Category;
 use App\Models\User;
 use App\Notifications\ShopVerificationNotification;
 use Auth;
@@ -15,7 +16,9 @@ class ShopController extends Controller
     public function index()
     {
         $shop = Auth::user()->shop;
-        return view('seller.shop', compact('shop'));
+        $category = Category::where('id', $shop->type_value)->first();
+
+        return view('seller.shop', compact('shop','category'));
     }
 
     public function update(Request $request)

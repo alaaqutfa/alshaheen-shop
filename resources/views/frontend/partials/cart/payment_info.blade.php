@@ -36,9 +36,9 @@
                     if ($product['digital'] == 1) {
                         $digital = 1;
                     }
-                    if ($product['cash_on_delivery'] == 0) {
-                        $cod_on = 0;
-                    }
+                    // if ($product['cash_on_delivery'] == 0) {
+                    //     $cod_on = 0;
+                    // }
                 }
             @endphp
             @if ($digital != 1 && $cod_on == 1)
@@ -47,7 +47,7 @@
                         <input value="cash_on_delivery" class="online_payment" type="radio"
                             name="payment_option" checked>
                         <span class="d-flex align-items-center justify-content-between aiz-megabox-elem rounded-0 p-3">
-                            <span class="d-block fw-400 fs-14">{{ translate('Payment upon Shipping Cost Confirmation') }}</span>
+                            <span class="d-block fw-400 fs-14">{{ translate('Cash on Delivery') }}</span>
                             <span class="rounded-1 h-40px w-70px overflow-hidden">
                                 <img src="{{ static_asset('assets/img/cards/cod.png') }}"
                                 class="img-fit h-100">

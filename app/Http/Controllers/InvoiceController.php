@@ -53,6 +53,7 @@ class InvoiceController extends Controller
             $currency_code == 'AED' ||
             $currency_code == 'EGP' ||
             $language_code == 'sa' ||
+            $language_code == 'sy' ||
             $currency_code == 'IQD' ||
             $language_code == 'ir' ||
             $language_code == 'om' ||
@@ -62,7 +63,7 @@ class InvoiceController extends Controller
             $language_code == 'jo'
         ) {
             // middle east/arabic/Israeli font
-            $font_family = "xbriyaz";
+            $font_family = "'tajwal','sans-serif'";
         } elseif ($currency_code == 'THB') {
             // thai font
             $font_family = "'Kanit','sans-serif'";

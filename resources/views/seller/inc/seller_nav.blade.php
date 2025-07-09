@@ -30,38 +30,6 @@
             @endif
         </div>
         <div class="d-flex justify-content-around align-items-center align-items-stretch">
-            
-            <div class="col-lg-6 col">
-                    <ul class="list-inline d-flex justify-content-between justify-content-lg-start mb-0">
-                        
-
-                        <!-- Currency Switcher -->
-                        @if (get_setting('show_currency_switcher') == 'on')
-                            <li class="list-inline-item dropdown ml-auto ml-lg-0 mr-0" id="currency-change">
-                                @php
-                                    $system_currency = get_system_currency();
-                                @endphp
-
-                                <a href="javascript:void(0)" class="dropdown-toggle text-secondary fs-12 py-2"
-                                    data-toggle="dropdown" data-display="static">
-                                    {{ $system_currency->name }}
-                                </a>
-                                <ul class="dropdown-menu dropdown-menu-right dropdown-menu-lg-left">
-                                    @foreach (get_all_active_currency() as $key => $currency)
-                                        <li>
-                                            <a class="dropdown-item @if ($system_currency->code == $currency->code) active @endif"
-                                                href="javascript:void(0)"
-                                                data-currency="{{ $currency->code }}">{{ $currency->name }}
-                                                ({{ $currency->symbol }})</a>
-                                        </li>
-                                    @endforeach
-                                </ul>
-                            </li>
-                        @endif
-
-                    </ul>
-                </div>
-                
 
              <!-- Notifications -->
              <div class="aiz-topbar-item mr-3">

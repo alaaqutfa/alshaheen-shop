@@ -9,14 +9,15 @@
                     <h5 class="mb-md-0 h6">{{ translate('Orders') }}</h5>
                 </div>
 
-                <div class="dropdown mb-2 mb-md-0">
+                {{-- <div class="dropdown mb-2 mb-md-0">
                     <button class="btn border dropdown-toggle" type="button" data-toggle="dropdown">
                         {{ translate('Bulk Action') }}
                     </button>
                     <div class="dropdown-menu dropdown-menu-right">
-                        <a class="dropdown-item" href="javascript:void(0)" onclick="order_bulk_export()">{{ translate('Export') }}</a>
+                        <a class="dropdown-item" href="javascript:void(0)"
+                            onclick="order_bulk_export()">{{ translate('Export') }}</a>
                     </div>
-                </div>
+                </div> --}}
                 <div class="col-md-3 ml-auto">
                     <select class="form-control aiz-selectpicker"
                         data-placeholder="{{ translate('Filter by Payment Status') }}" name="payment_status"
@@ -58,7 +59,7 @@
                     </div>
                 </div>
             </div>
-        
+
 
             @if (count($orders) > 0)
                 <div class="card-body p-3">
@@ -78,7 +79,11 @@
                                 <th>{{ translate('Order Code') }}</th>
                                 <th data-breakpoints="lg">{{ translate('Num. of Products') }}</th>
                                 <th data-breakpoints="lg">{{ translate('Customer') }}</th>
-                                <th data-breakpoints="md">{{ translate('Amount') }}</th>
+                                <th data-breakpoints="md">{{ translate('total_order') }}</th>
+                                @if (get_setting('vendor_commission_activation'))
+                                    <th data-breakpoints="md">{{ translate('due_to_seller') }}</th>
+                                    <th data-breakpoints="md">{{ translate('admin_commission') }}</th>
+                                @endif
                                 <th data-breakpoints="lg">{{ translate('Delivery Status') }}</th>
                                 <th>{{ translate('Payment Status') }}</th>
                                 <th class="text-right">{{ translate('Options') }}</th>
@@ -88,6 +93,20 @@
                             @foreach ($orders as $key => $order_id)
                                 @php
                                     $order = \App\Models\Order::find($order_id->id);
+                                    $grand_total = $order->grand_total;
+                                $seller_earning = 0;
+                                $admin_commission = 0;
+                                if (get_setting('vendor_commission_activation') && $order->commission_calculated) {
+                                    $orderCommissions = \App\Models\CommissionHistory::where(
+                                        'order_id',
+                                        $order->id,
+                                    )->get();
+                                    foreach ($orderCommissions as $key => $orderCommission) {
+                                        $admin_commission += $orderCommission->admin_commission;
+                                        $seller_earning += $orderCommission->seller_earning;
+                                    }
+                                    $grand_total = $order->grand_total - $admin_commission;
+                                }
                                 @endphp
                                 @if ($order != null)
                                     <tr>
@@ -120,8 +139,21 @@
                                             @endif
                                         </td>
                                         <td>
-                                            {{ single_price($order->grand_total) }}
+                                            {{ single_price($grand_total) }}
                                         </td>
+                                        @if (get_setting('vendor_commission_activation'))
+                                            @if ($order->commission_calculated)
+                                                <td>
+                                                    {{ single_price($seller_earning) }}
+                                                </td>
+                                                <td>
+                                                    {{ single_price($admin_commission) }}
+                                                </td>
+                                            @else
+                                                <td>{{ translate('Not calculated') }}</td>
+                                                <td>{{ translate('Not calculated') }}</td>
+                                            @endif
+                                        @endif
                                         <td>
                                             @php
                                                 $status = $order->delivery_status;
@@ -130,29 +162,31 @@
                                         </td>
                                         <td>
                                             @if ($order->payment_status == 'paid')
-                                                <span class="badge badge-inline badge-success">{{ translate('Paid') }}</span>
+                                                <span
+                                                    class="badge badge-inline badge-success">{{ translate('Paid') }}</span>
                                             @else
-                                                <span class="badge badge-inline badge-danger">{{ translate('Unpaid') }}</span>
+                                                <span
+                                                    class="badge badge-inline badge-danger">{{ translate('Unpaid') }}</span>
                                             @endif
                                         </td>
                                         <td class="text-right">
-                                            @if (addon_is_activated('pos_system') && $order->order_from == 'pos')
+                                            {{-- @if (addon_is_activated('pos_system') && $order->order_from == 'pos')
                                                 <a class="btn btn-soft-success btn-icon btn-circle btn-sm"
                                                     href="{{ route('seller.invoice.thermal_printer', $order->id) }}"
                                                     target="_blank" title="{{ translate('Thermal Printer') }}">
                                                     <i class="las la-print"></i>
                                                 </a>
-                                            @endif
+                                            @endif --}}
                                             <a href="{{ route('seller.orders.show', encrypt($order->id)) }}"
                                                 class="btn btn-soft-info btn-icon btn-circle btn-sm"
                                                 title="{{ translate('Order Details') }}">
                                                 <i class="las la-eye"></i>
                                             </a>
-                                            <a href="{{ route('seller.invoice.download', $order->id) }}"
+                                            {{-- <a href="{{ route('seller.invoice.download', $order->id) }}"
                                                 class="btn btn-soft-warning btn-icon btn-circle btn-sm"
                                                 title="{{ translate('Download Invoice') }}">
                                                 <i class="las la-download"></i>
-                                            </a>
+                                            </a> --}}
                                         </td>
                                     </tr>
                                 @endif
@@ -171,7 +205,6 @@
 
 @section('script')
     <script type="text/javascript">
-
         $(document).on("change", ".check-all", function() {
             if (this.checked) {
                 // Iterate each checkbox
@@ -189,8 +222,8 @@
             $('#sort_orders').submit();
         }
 
-        function order_bulk_export (){
-            var url = '{{route('seller.order-bulk-export')}}';
+        function order_bulk_export() {
+            var url = '{{ route('seller.order-bulk-export') }}';
             $("#sort_orders").attr("action", url);
             $('#sort_orders').submit();
             $("#sort_orders").attr("action", '');

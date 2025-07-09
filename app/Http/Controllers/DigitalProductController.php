@@ -86,7 +86,7 @@ class DigitalProductController extends Controller
         //VAT & Tax
         if ($request->tax_id) {
             (new ProductTaxService)->store($request->only([
-                'tax_id', 'tax', 'tax_type', 'product_id'
+                'tax_id', 'tax', 'tax_type', 'product_id',
             ]));
         }
 
@@ -206,7 +206,7 @@ class DigitalProductController extends Controller
         flash(translate('Product has been deleted successfully'))->success();
         Artisan::call('view:clear');
         Artisan::call('cache:clear');
-        
+
         return back();
     }
 

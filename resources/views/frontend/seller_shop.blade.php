@@ -107,7 +107,7 @@
                                         {{ translate('Reviews') }})</span>
                                 </div>
                                 <!-- Address -->
-                                <div class="location fs-12 opacity-70 text-dark mt-1">{{ $shop->address }}</div>
+                                {{-- <div class="location fs-12 opacity-70 text-dark mt-1">{{ $shop->address }}</div> --}}
                             </div>
                         </div>
                     </div>
@@ -120,52 +120,54 @@
                                     <div class="mt-1 fs-16 fw-700 text-secondary">{{ date('d M Y',strtotime($shop->created_at)) }}</div>
                                 </div>
                                 <!-- Social Links -->
-                                @if ($shop->facebook || $shop->instagram || $shop->google || $shop->twitter || $shop->youtube)
-                                    <div class="pl-md-3 pr-lg-3 mt-2 mt-md-0 border-lg-right">
-                                        <span class="fs-10 fw-400 text-secondary">{{ translate('Social Media') }}</span><br>
-                                        <ul class="social-md colored-light list-inline mb-0 mt-1">
-                                            @if ($shop->facebook)
-                                            <li class="list-inline-item mr-2">
-                                                <a href="{{ $shop->facebook }}" class="facebook"
-                                                    target="_blank">
-                                                    <i class="lab la-facebook-f"></i>
-                                                </a>
-                                            </li>
-                                            @endif
-                                            @if ($shop->instagram)
-                                            <li class="list-inline-item mr-2">
-                                                <a href="{{ $shop->instagram }}" class="instagram"
-                                                    target="_blank">
-                                                    <i class="lab la-instagram"></i>
-                                                </a>
-                                            </li>
-                                            @endif
-                                            @if ($shop->google)
-                                            <li class="list-inline-item mr-2">
-                                                <a href="{{ $shop->google }}" class="google"
-                                                    target="_blank">
-                                                    <i class="lab la-google"></i>
-                                                </a>
-                                            </li>
-                                            @endif
-                                            @if ($shop->twitter)
-                                            <li class="list-inline-item mr-2">
-                                                <a href="{{ $shop->twitter }}" class="twitter"
-                                                    target="_blank">
-                                                    <i class="lab la-twitter"></i>
-                                                </a>
-                                            </li>
-                                            @endif
-                                            @if ($shop->youtube)
-                                            <li class="list-inline-item">
-                                                <a href="{{ $shop->youtube }}" class="youtube"
-                                                    target="_blank">
-                                                    <i class="lab la-youtube"></i>
-                                                </a>
-                                            </li>
-                                            @endif
-                                        </ul>
-                                    </div>
+                                @if($shop->name === 'Syrian Souq')
+                                    @if ($shop->facebook || $shop->instagram || $shop->google || $shop->twitter || $shop->youtube)
+                                        <div class="pl-md-3 pr-lg-3 mt-2 mt-md-0 border-lg-right">
+                                            <span class="fs-10 fw-400 text-secondary">{{ translate('Social Media') }}</span><br>
+                                            <ul class="social-md colored-light list-inline mb-0 mt-1">
+                                                @if ($shop->facebook)
+                                                <li class="list-inline-item mr-2">
+                                                    <a href="{{ $shop->facebook }}" class="facebook"
+                                                        target="_blank">
+                                                        <i class="lab la-facebook-f"></i>
+                                                    </a>
+                                                </li>
+                                                @endif
+                                                @if ($shop->instagram)
+                                                <li class="list-inline-item mr-2">
+                                                    <a href="{{ $shop->instagram }}" class="instagram"
+                                                        target="_blank">
+                                                        <i class="lab la-instagram"></i>
+                                                    </a>
+                                                </li>
+                                                @endif
+                                                @if ($shop->google)
+                                                <li class="list-inline-item mr-2">
+                                                    <a href="{{ $shop->google }}" class="google"
+                                                        target="_blank">
+                                                        <i class="lab la-google"></i>
+                                                    </a>
+                                                </li>
+                                                @endif
+                                                @if ($shop->twitter)
+                                                <li class="list-inline-item mr-2">
+                                                    <a href="{{ $shop->twitter }}" class="twitter"
+                                                        target="_blank">
+                                                        <i class="lab la-twitter"></i>
+                                                    </a>
+                                                </li>
+                                                @endif
+                                                @if ($shop->youtube)
+                                                <li class="list-inline-item">
+                                                    <a href="{{ $shop->youtube }}" class="youtube"
+                                                        target="_blank">
+                                                        <i class="lab la-youtube"></i>
+                                                    </a>
+                                                </li>
+                                                @endif
+                                            </ul>
+                                        </div>
+                                    @endif
                                 @endif
                             </div>
                             <!-- follow -->

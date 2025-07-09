@@ -285,10 +285,10 @@
                             <input type="hidden" name="types[]" value="facebook_link">
                             <input type="text" class="form-control" placeholder="http://" name="facebook_link" value="{{ get_setting('facebook_link')}}">
                         </div>
-						<!-- Twitter Link -->
+						<!-- Whatsapp Link -->
                         <div class="input-group form-group">
                             <div class="input-group-prepend">
-                                <span class="input-group-text"><i class="lab la-twitter"></i></span>
+                                <span class="input-group-text"><i class="lab la-whatsapp"></i></span>
                             </div>
                             <input type="hidden" name="types[]" value="twitter_link">
                             <input type="text" class="form-control" placeholder="http://" name="twitter_link" value="{{ get_setting('twitter_link')}}">

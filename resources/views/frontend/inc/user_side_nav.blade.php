@@ -221,7 +221,7 @@
                 @endif
 
                 <!-- Conversations -->
-                @if (get_setting('conversation_system') == 1)
+                {{-- @if (get_setting('conversation_system') == 1)
                     @php
                         $conversation = get_non_viewed_conversations();
                     @endphp
@@ -242,7 +242,7 @@
                             @endif
                         </a>
                     </li>
-                @endif
+                @endif --}}
 
                 <!-- My Wallet -->
                 @if (get_setting('wallet_system') == 1)

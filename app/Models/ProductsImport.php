@@ -42,50 +42,36 @@ class ProductsImport implements ToCollection, WithHeadingRow, WithValidation, To
                 $approved = 1;
                 if ($user->user_type == 'seller' && get_setting('product_approve_by_admin') == 1) {
                     $approved = 0;
-                }   
-                
-                $slug = Str::slug($row['name']);
-
-                $same_slug_count = Product::where('slug', 'LIKE', $slug . '%')->count();
-                $slug_suffix = $same_slug_count ? '-' . ($same_slug_count + 1) : '';
-                $slug .= $slug_suffix;
+                }
 
                 $productId = Product::create([
                     'name' => $row['name'],
                     'description' => $row['description'],
-                    // 'added_by' => $user->user_type == 'seller' ? 'seller' : 'admin',
-                    'added_by' =>'seller',
-                    // 'user_id' => $user->user_type == 'seller' ? $user->id : User::where('user_type', 'admin')->first()->id,
-                    'user_id' => $row['user_id'],
+                    'added_by' => $user->user_type == 'seller' ? 'seller' : 'admin',
+                    'user_id' => $user->user_type == 'seller' ? $user->id : User::where('user_type', 'admin')->first()->id,
                     'approved' => $approved,
                     'category_id' => $row['category_id'],
-                    //'brand_id' => $row['brand_id'],
-                    // 'video_provider' => $row['video_provider'],
-                    // 'video_link' => $row['video_link'],
-                    //'tags' => $row['tags'],
+                    'brand_id' => $row['brand_id'],
+                    'video_provider' => $row['video_provider'],
+                    'video_link' => $row['video_link'],
+                    'tags' => $row['tags'],
                     'unit_price' => $row['unit_price'],
-                    'weight'=> $row['weight'],
                     'unit' => $row['unit'],
-                    // 'meta_title' => $row['meta_title'],
-                    // 'meta_description' => $row['meta_description'],
-                    'colors' => isset($row['colors']) && !empty($row['colors']) ? $row['colors'] : json_encode([]),
+                    'meta_title' => $row['meta_title'],
+                    'meta_description' => $row['meta_description'],
                     'est_shipping_days' => $row['est_shipping_days'],
-                    'attributes' => isset($row['attributes']) && !empty($row['attributes']) ? $row['attributes'] : json_encode([]),                    
-                     'choice_options' => isset($row['choice_options']) && !empty($row['choice_options']) ? $row['choice_options'] : json_encode([]),
-                    // 'variations' => json_encode(array()),
-                    // 'slug' => preg_replace('/[^A-Za-z0-9\-]/', '', str_replace(' ', '-', strtolower($row['slug']))) . '-' . Str::random(5),
-                    'slug' => $slug,
-                    'thumbnail_img' => $row['thumbnail_img'],
-                    'photos' => $row['photos'],
-                    'variant_product' => (isset($row['colors']) && !empty($row['colors'])) || 
-                         (isset($row['attributes']) && !empty($row['attributes'])) ? '1' : '0',
-                    'current_stock'=>$row['current_stock'],
+                    'colors' => json_encode(array()),
+                    'choice_options' => json_encode(array()),
+                    'variations' => json_encode(array()),
+                    'slug' => preg_replace('/[^A-Za-z0-9\-]/', '', str_replace(' ', '-', strtolower($row['slug']))) . '-' . Str::random(5),
+                    'thumbnail_img' => $this->downloadThumbnail($row['thumbnail_img']),
+                    'photos' => $this->downloadGalleryImages($row['photos']),
                 ]);
                 ProductStock::create([
                     'product_id' => $productId->id,
                     'qty' => $row['current_stock'],
                     'price' => $row['unit_price'],
-                    //'sku' => $row['sku'],
+                    'sku' => $row['sku'],
                     'variant' => '',
                 ]);
                 if($row['multi_categories'] != null){
@@ -131,7 +117,6 @@ class ProductsImport implements ToCollection, WithHeadingRow, WithValidation, To
             $upload->external_link = $url;
             $upload->type = 'image';
             $upload->save();
-
             return $upload->id;
         } catch (\Exception $e) {
         }
