@@ -388,12 +388,12 @@
 
                                             <div class="form-row">
                                                 <div class="form-group col-md-6">
-                                                    <input type="text" name="tax_value[]"
+                                                    <input type="text" name="tax_value[]" class="form-control"
                                                         value="{{ $tax->tax_value }}" readonly />
                                                 </div>
                                                 <div class="form-group col-md-6">
-                                                    <input type="text" name="tax_types[]"
-                                                        value="{{ $tax->tax_type }}" readonly />
+                                                    <input type="text" name="tax_types[]" class="form-control"
+                                                        value="{{ $tax->tax_type == 'amount' ? translate('Flat') : translate('Percent') }}" readonly />
                                                 </div>
                                             </div>
                                         @endforeach
