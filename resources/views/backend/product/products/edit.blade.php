@@ -375,48 +375,30 @@
                                 </div>
 
                                 <!-- Vat & TAX -->
-                                <h5 class="mb-3 mt-4 pb-3 fs-17 fw-700" style="border-bottom: 1px dashed #e4e5eb;">
-                                    {{ translate('Vat & TAX') }}</h5>
-                                <div class="w-100">
-                                    @foreach (\App\Models\Tax::where('tax_status', 1)->get() as $tax)
-                                        <label for="name">
-                                            {{ $tax->name }}
-                                            <input type="hidden" value="{{ $tax->id }}" name="tax_id[]">
-                                        </label>
+                                @if (count(\App\Models\Tax::where('tax_status', 1)->get()) > 0)
+                                    <h5 class="mb-3 mt-4 pb-3 fs-17 fw-700" style="border-bottom: 1px dashed #e4e5eb;">
+                                        {{ translate('Vat & TAX') }}</h5>
+                                    <div class="w-100">
+                                        @foreach (\App\Models\Tax::where('tax_status', 1)->get() as $tax)
+                                            <label for="">
+                                                {{ $tax->name }}
+                                                <input type="hidden" name="tax_name" value="{{ $tax->name }}" />
+                                                <input type="hidden" value="{{ $tax->id }}" name="tax_id[]" />
+                                            </label>
 
-                                        @php
-                                            $tax_amount = 0;
-                                            $tax_type = '';
-                                            foreach ($tax->product_taxes as $row) {
-                                                if ($product->id == $row->product_id) {
-                                                    $tax_amount = $row->tax;
-                                                    $tax_type = $row->tax_type;
-                                                }
-                                            }
-                                        @endphp
-
-                                        <div class="form-row">
-                                            <div class="form-group col-md-6">
-                                                <input type="number" lang="en" min="0"
-                                                    value="{{ $tax_amount }}" step="0.01"
-                                                    placeholder="{{ translate('Tax') }}" name="tax[]"
-                                                    class="form-control">
+                                            <div class="form-row">
+                                                <div class="form-group col-md-6">
+                                                    <input type="text" name="tax_value[]"
+                                                        value="{{ $tax->tax_value }}" readonly />
+                                                </div>
+                                                <div class="form-group col-md-6">
+                                                    <input type="text" name="tax_types[]"
+                                                        value="{{ $tax->tax_type }}" readonly />
+                                                </div>
                                             </div>
-                                            <div class="form-group col-md-6">
-                                                <select class="form-control aiz-selectpicker" name="tax_type[]">
-                                                    <option value="amount"
-                                                        @if ($tax_type == 'amount') selected @endif>
-                                                        {{ translate('Flat') }}
-                                                    </option>
-                                                    <option value="percent"
-                                                        @if ($tax_type == 'percent') selected @endif>
-                                                        {{ translate('Percent') }}
-                                                    </option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    @endforeach
-                                </div>
+                                        @endforeach
+                                    </div>
+                                @endif
                             </div>
                         </div>
 
@@ -1190,19 +1172,19 @@
                 success: function(data) {
                     var obj = JSON.parse(data);
                     $('#customer_choice_options').append('\
-                            <div class="form-group row">\
-                                <div class="col-md-3">\
-                                    <input type="hidden" name="choice_no[]" value="' + i + '">\
-                                    <input type="text" class="form-control" name="choice[]" value="' + name +
+                                <div class="form-group row">\
+                                    <div class="col-md-3">\
+                                        <input type="hidden" name="choice_no[]" value="' + i + '">\
+                                        <input type="text" class="form-control" name="choice[]" value="' + name +
                         '" placeholder="{{ translate('Choice Title') }}" readonly>\
-                                </div>\
-                                <div class="col-md-8">\
-                                    <select class="form-control aiz-selectpicker attribute_choice" data-live-search="true" name="choice_options_' +
+                                    </div>\
+                                    <div class="col-md-8">\
+                                        <select class="form-control aiz-selectpicker attribute_choice" data-live-search="true" name="choice_options_' +
                         i + '[]" data-selected-text-format="count" multiple>\
-                                        ' + obj + '\
-                                    </select>\
-                                </div>\
-                            </div>');
+                                            ' + obj + '\
+                                        </select>\
+                                    </div>\
+                                </div>');
                     AIZ.plugins.bootstrapSelect('refresh');
                 }
             });

@@ -348,30 +348,30 @@
                                 </div>
 
                                 <!-- Vat & TAX -->
-                                <h5 class="mb-3 mt-4 pb-3 fs-17 fw-700" style="border-bottom: 1px dashed #e4e5eb;">
-                                    {{ translate('Vat & TAX') }}</h5>
-                                <div class="w-100">
-                                    @foreach (\App\Models\Tax::where('tax_status', 1)->get() as $tax)
-                                        <label for="name">
-                                            {{ $tax->name }}
-                                            <input type="hidden" value="{{ $tax->id }}" name="tax_id[]">
-                                        </label>
+                                @if (count(\App\Models\Tax::where('tax_status', 1)->get()) > 0)
+                                    <h5 class="mb-3 mt-4 pb-3 fs-17 fw-700" style="border-bottom: 1px dashed #e4e5eb;">
+                                        {{ translate('Vat & TAX') }}</h5>
+                                    <div class="w-100">
+                                        @foreach (\App\Models\Tax::where('tax_status', 1)->get() as $tax)
+                                            <label for="">
+                                                {{ $tax->name }}
+                                                <input type="hidden" name="tax_name" value="{{ $tax->name }}" />
+                                                <input type="hidden" value="{{ $tax->id }}" name="tax_id[]" />
+                                            </label>
 
-                                        <div class="form-row">
-                                            <div class="form-group col-md-6">
-                                                <input type="number" lang="en" min="0" value="0"
-                                                    step="0.01" placeholder="{{ translate('Tax') }}" name="tax[]"
-                                                    class="form-control">
+                                            <div class="form-row">
+                                                <div class="form-group col-md-6">
+                                                    <input type="text" name="tax_value[]"
+                                                        value="{{ $tax->tax_value }}" readonly />
+                                                </div>
+                                                <div class="form-group col-md-6">
+                                                    <input type="text" name="tax_types[]"
+                                                        value="{{ $tax->tax_type }}" readonly />
+                                                </div>
                                             </div>
-                                            <div class="form-group col-md-6">
-                                                <select class="form-control aiz-selectpicker" name="tax_type[]">
-                                                    <option value="amount">{{ translate('Flat') }}</option>
-                                                    <option value="percent">{{ translate('Percent') }}</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    @endforeach
-                                </div>
+                                        @endforeach
+                                    </div>
+                                @endif
                             </div>
                         </div>
 
@@ -972,7 +972,7 @@
                 $('.childCategory').slideUp();
                 $('.childCategory input:checkbox').prop('checked', false);
                 let $this = $(this);
-                $('.parent_category_'+$this.val()).slideDown();
+                $('.parent_category_' + $this.val()).slideDown();
             });
         });
 
@@ -1008,23 +1008,25 @@
                     var obj = JSON.parse(data);
                     $('#customer_choice_options').append(
                         '\
-                                                                                                        <div class="form-group row">\
-                                                                                                            <div class="col-md-3">\
-                                                                                                                <input type="hidden" name="choice_no[]" value="' +
+                                                                                                                    <div class="form-group row">\
+                                                                                                                        <div class="col-md-3">\
+                                                                                                                            <input type="hidden" name="choice_no[]" value="' +
                         i +
                         '">\
-                                                                                                                <input type="text" class="form-control" name="choice[]" value="' +
+                                                                                                                            <input type="text" class="form-control" name="choice[]" value="' +
                         name +
                         '" placeholder="{{ translate('Choice Title') }}" readonly>\
-                                                                                                            </div>\
-                                                                                                            <div class="col-md-8">\
-                                                                                                                <select class="form-control aiz-selectpicker attribute_choice" data-live-search="true" name="choice_options_' +
-                        i + '[]" data-selected-text-format="count" multiple>\
-                                                                                                                    ' +
+                                                                                                                        </div>\
+                                                                                                                        <div class="col-md-8">\
+                                                                                                                            <select class="form-control aiz-selectpicker attribute_choice" data-live-search="true" name="choice_options_' +
+                        i +
+                        '[]" data-selected-text-format="count" multiple>\
+                                                                                                                                ' +
                         obj + '\
-                                                                                                                </select>\
-                                                                                                            </div>\
-                                                                                                        </div>');
+                                                                                                                            </select>\
+                                                                                                                        </div>\
+                                                                                                                    </div>'
+                        );
                     AIZ.plugins.bootstrapSelect('refresh');
                 }
             });

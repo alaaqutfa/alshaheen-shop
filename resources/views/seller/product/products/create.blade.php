@@ -301,7 +301,6 @@
                         <input type="hidden" name="tax_id[]" value="{{ $tax->id }}">
                         <input type="hidden" name="tax_value[]" value="{{ $tax->tax_value }}">
                         <input type="hidden" name="tax_types[]" value="{{ $tax->tax_type }}">
-                        {{-- amount , percent --}}
                     </div>
                 @endforeach
             </div>
