@@ -7,7 +7,7 @@
                 <div class="col">
                     <h1 class="h3">{{ translate('Edit Product') }}</h1>
                 </div>
-                    {{--
+                {{--
                     <div class="col text-right">
                         <a class="btn has-transition btn-xs p-0 hov-svg-danger" href="{{ route('home') }}"
                             target="_blank" data-toggle="tooltip" data-placement="top" data-title="{{ translate('View Tutorial Video') }}">
@@ -177,8 +177,7 @@
                                                 <div class="col-xxl-9">
                                                     <input type="number" lang="en"
                                                         class="form-control @error('min_qty') is-invalid @enderror"
-                                                        name="min_qty"
-                                                        value="{{ $product->min_qty ?? 1 }}"
+                                                        name="min_qty" value="{{ $product->min_qty ?? 1 }}"
                                                         min="1">
                                                     <small
                                                         class="text-muted">{{ translate('The minimum quantity needs to be purchased by your customer.') }}</small>
@@ -243,28 +242,37 @@
                                                         </span>
                                                     </h6>
                                                 </div>
-                                                <div class="card-body">
-                                                    <div class="h-300px overflow-auto c-scrollbar-light">
+                                                <div id="categories-body" class="card-body p-0">
+                                                    <div class="h-300px overflow-auto c-scrollbar-light p-4">
                                                         @php
                                                             $old_categories = $product
                                                                 ->categories()
                                                                 ->pluck('category_id')
                                                                 ->toArray();
                                                         @endphp
-                                                        <ul class="hummingbird-treeview-converter list-unstyled"
-                                                            data-checkbox-name="category_ids[]"
-                                                            data-radio-name="category_id">
-                                                            @foreach ($categories as $category)
-                                                                <li id="{{ $category->id }}">
-                                                                    {{ $category->getTranslation('name') }}</li>
-                                                                @foreach ($category->childrenCategories as $childCategory)
-                                                                    @include(
-                                                                        'backend.product.products.child_category',
-                                                                        ['child_category' => $childCategory]
-                                                                    )
-                                                                @endforeach
+                                                        @foreach ($categories as $category)
+                                                            @if ($category->parent_id == 0)
+                                                                <div
+                                                                    class="input-group w-100 d-flex justify-content-between align-items-center">
+                                                                    <label for="category_id_{{ $category->id }}"
+                                                                        class="mb-0">
+                                                                        {{ $category->getTranslation('name') }}
+                                                                    </label>
+                                                                    <input type="radio" name="category_id"
+                                                                        id="category_id_{{ $category->id }}"
+                                                                        value="{{ $category->id }}" />
+                                                                </div>
+                                                            @endif
+                                                            @foreach ($category->childrenCategories as $childCategory)
+                                                                @include(
+                                                                    'backend.product.products.child_category',
+                                                                    [
+                                                                        'parent_category' => $category->id,
+                                                                        'child_category' => $childCategory,
+                                                                    ]
+                                                                )
                                                             @endforeach
-                                                        </ul>
+                                                        @endforeach
                                                     </div>
                                                 </div>
                                             </div>
@@ -1130,31 +1138,30 @@
 @endsection
 
 @section('script')
-    <!-- Treeview js -->
-    <script src="{{ static_asset('assets/js/hummingbird-treeview.js') }}"></script>
-
     <script type="text/javascript">
         $(document).ready(function() {
             show_hide_shipping_div();
-
-            $("#treeview").hummingbird();
             var main_id = '{{ $product->category_id != null ? $product->category_id : 0 }}';
             var selected_ids = '{{ implode(',', $old_categories) }}';
             if (selected_ids != '') {
                 const myArray = selected_ids.split(",");
                 for (let i = 0; i < myArray.length; i++) {
                     const element = myArray[i];
-                    $('#treeview input:checkbox#' + element).prop('checked', true);
-                    $('#treeview input:checkbox#' + element).parents("ul").css("display", "block");
-                    $('#treeview input:checkbox#' + element).parents("li").children('.las').removeClass("la-plus")
-                        .addClass('la-minus');
+                    $('#categories-body input:checkbox#' + element).prop('checked', true);
                 }
             }
-            $('#treeview input:radio[value=' + main_id + ']').prop('checked', true);
-
+            $('#categories-body input:radio[value=' + main_id + ']').prop('checked', true);
             fq_bought_product_selection_type();
-
+            $('.childCategory').slideUp();
+            $('.parent_category_' + main_id).slideDown();
+            $('input:radio[name="category_id"]').on("change", function() {
+                $('.childCategory').slideUp();
+                $('.childCategory input:checkbox').prop('checked', false);
+                let $this = $(this);
+                $('.parent_category_' + $this.val()).slideDown();
+            });
         });
+
 
         $("[name=shipping_type]").on("change", function() {
             show_hide_shipping_div();
@@ -1183,18 +1190,19 @@
                 success: function(data) {
                     var obj = JSON.parse(data);
                     $('#customer_choice_options').append('\
-                    <div class="form-group row">\
-                        <div class="col-md-3">\
-                            <input type="hidden" name="choice_no[]" value="' + i + '">\
-                            <input type="text" class="form-control" name="choice[]" value="' + name +
+                            <div class="form-group row">\
+                                <div class="col-md-3">\
+                                    <input type="hidden" name="choice_no[]" value="' + i + '">\
+                                    <input type="text" class="form-control" name="choice[]" value="' + name +
                         '" placeholder="{{ translate('Choice Title') }}" readonly>\
-                        </div>\
-                        <div class="col-md-8">\
-                            <select class="form-control aiz-selectpicker attribute_choice" data-live-search="true" name="choice_options_' + i + '[]" data-selected-text-format="count" multiple>\
-                                ' + obj + '\
-                            </select>\
-                        </div>\
-                    </div>');
+                                </div>\
+                                <div class="col-md-8">\
+                                    <select class="form-control aiz-selectpicker attribute_choice" data-live-search="true" name="choice_options_' +
+                        i + '[]" data-selected-text-format="count" multiple>\
+                                        ' + obj + '\
+                                    </select>\
+                                </div>\
+                            </div>');
                     AIZ.plugins.bootstrapSelect('refresh');
                 }
             });

@@ -178,9 +178,7 @@ class ProductController extends Controller
     {
         // CoreComponentRepository::initializeCache();
 
-        $categories = Category::where('parent_id', 0)
-            ->where('digital', 0)
-            ->with('childrenCategories')
+        $categories = Category::where('digital', 0)
             ->get();
 
         return view('backend.product.products.create', compact('categories'));
@@ -336,7 +334,7 @@ class ProductController extends Controller
         //     $category_products_count = get_count_product_in_category($category_id);
         //     activate_category($category_id, $category_products_count);
         // }
-        
+
         //Product Stock
         $product->stocks()->delete();
         $this->productStockService->store($request->only([

@@ -1,7 +1,6 @@
 @extends('backend.layouts.app')
 
 @section('content')
-
     @php
         // CoreComponentRepository::instantiateShopRepository();
         // CoreComponentRepository::initializeCache();
@@ -110,7 +109,7 @@
                                     {{ translate('Product Information') }}</h5>
                                 <div class="w-100">
                                     <div class="row">
-                                        <div class="col-xxxl-7 col-xl-6">
+                                        <div class="col-xxxl-7 col-xl-5">
                                             <!-- Product Name -->
                                             <div class="form-group row">
                                                 <label
@@ -220,7 +219,7 @@
                                         </div>
 
                                         <!-- Product Category -->
-                                        <div class="col-xxxl-5 col-xl-6">
+                                        <div class="col-xxxl-5 col-xl-7">
                                             <div
                                                 class="card @if ($errors->has('category_ids') || $errors->has('category_id')) border border-danger @endif">
                                                 <div class="card-header">
@@ -234,22 +233,31 @@
                                                         </span>
                                                     </h6>
                                                 </div>
-                                                <div class="card-body">
-                                                    <div class="h-300px overflow-auto c-scrollbar-light">
-                                                        <ul class="hummingbird-treeview-converter list-unstyled"
-                                                            data-checkbox-name="category_ids[]"
-                                                            data-radio-name="category_id">
-                                                            @foreach ($categories as $category)
-                                                                <li id="{{ $category->id }}">
-                                                                    {{ $category->getTranslation('name') }}</li>
-                                                                @foreach ($category->childrenCategories as $childCategory)
-                                                                    @include(
-                                                                        'backend.product.products.child_category',
-                                                                        ['child_category' => $childCategory]
-                                                                    )
-                                                                @endforeach
+                                                <div id="categories-body" class="card-body p-0">
+                                                    <div class="h-300px overflow-auto c-scrollbar-light p-4">
+                                                        @foreach ($categories as $category)
+                                                            @if ($category->parent_id == 0)
+                                                                <div
+                                                                    class="input-group w-100 d-flex justify-content-between align-items-center">
+                                                                    <label for="category_id_{{ $category->id }}"
+                                                                        class="mb-0">
+                                                                        {{ $category->getTranslation('name') }}
+                                                                    </label>
+                                                                    <input type="radio" name="category_id"
+                                                                        id="category_id_{{ $category->id }}"
+                                                                        value="{{ $category->id }}" />
+                                                                </div>
+                                                            @endif
+                                                            @foreach ($category->childrenCategories as $childCategory)
+                                                                @include(
+                                                                    'backend.product.products.child_category',
+                                                                    [
+                                                                        'parent_category' => $category->id,
+                                                                        'child_category' => $childCategory,
+                                                                    ]
+                                                                )
                                                             @endforeach
-                                                        </ul>
+                                                        @endforeach
                                                     </div>
                                                 </div>
                                             </div>
@@ -936,7 +944,6 @@
             </div>
         </div>
     </div>
-
 @endsection
 
 @section('modal')
@@ -945,36 +952,27 @@
 @endsection
 
 @section('script')
-    <!-- Treeview js -->
-    <script src="{{ static_asset('assets/js/hummingbird-treeview.js') }}"></script>
-
     <script type="text/javascript">
         $(document).ready(function() {
-            $("#treeview").hummingbird();
-
             var main_id = '{{ old('category_id') }}';
             var selected_ids = [];
             @if (old('category_ids'))
                 selected_ids = @json(old('category_ids'));
+                console.log(selected_ids);
             @endif
             for (let i = 0; i < selected_ids.length; i++) {
                 const element = selected_ids[i];
-                $('#treeview input:checkbox#' + element).prop('checked', true);
-                $('#treeview input:checkbox#' + element).parents("ul").css("display", "block");
-                $('#treeview input:checkbox#' + element).parents("li").children('.las').removeClass("la-plus")
-                    .addClass('la-minus');
+                $('#categories-body input:checkbox#' + element).prop('checked', true);
             }
-
             if (main_id) {
-                $('#treeview input:radio[value=' + main_id + ']').prop('checked', true);
+                $('input:radio[value=' + main_id + ']').prop('checked', true);
             }
-
-            $('#treeview input:checkbox').on("click", function() {
+            $('.childCategory').slideUp();
+            $('input:radio[name="category_id"]').on("change", function() {
+                $('.childCategory').slideUp();
+                $('.childCategory input:checkbox').prop('checked', false);
                 let $this = $(this);
-                if ($this.prop('checked') && ($('#treeview input:radio:checked').length == 0)) {
-                    let val = $this.val();
-                    $('#treeview input:radio[value=' + val + ']').prop('checked', true);
-                }
+                $('.parent_category_'+$this.val()).slideDown();
             });
         });
 
@@ -1008,20 +1006,25 @@
                 },
                 success: function(data) {
                     var obj = JSON.parse(data);
-                    $('#customer_choice_options').append('\
-                                        <div class="form-group row">\
-                                            <div class="col-md-3">\
-                                                <input type="hidden" name="choice_no[]" value="' + i + '">\
-                                                <input type="text" class="form-control" name="choice[]" value="' + name +
+                    $('#customer_choice_options').append(
+                        '\
+                                                                                                        <div class="form-group row">\
+                                                                                                            <div class="col-md-3">\
+                                                                                                                <input type="hidden" name="choice_no[]" value="' +
+                        i +
+                        '">\
+                                                                                                                <input type="text" class="form-control" name="choice[]" value="' +
+                        name +
                         '" placeholder="{{ translate('Choice Title') }}" readonly>\
-                                            </div>\
-                                            <div class="col-md-8">\
-                                                <select class="form-control aiz-selectpicker attribute_choice" data-live-search="true" name="choice_options_' +
+                                                                                                            </div>\
+                                                                                                            <div class="col-md-8">\
+                                                                                                                <select class="form-control aiz-selectpicker attribute_choice" data-live-search="true" name="choice_options_' +
                         i + '[]" data-selected-text-format="count" multiple>\
-                                                    ' + obj + '\
-                                                </select>\
-                                            </div>\
-                                        </div>');
+                                                                                                                    ' +
+                        obj + '\
+                                                                                                                </select>\
+                                                                                                            </div>\
+                                                                                                        </div>');
                     AIZ.plugins.bootstrapSelect('refresh');
                 }
             });
