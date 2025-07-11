@@ -116,7 +116,7 @@
                                     {{ translate('Product Information') }}</h5>
                                 <div class="w-100">
                                     <div class="row">
-                                        <div class="col-xxxl-7 col-xl-6">
+                                        <div class="col-xxxl-7 col-xl-5">
                                             <!-- Product Name -->
                                             <div class="form-group row">
                                                 <label
@@ -229,7 +229,7 @@
                                         </div>
 
                                         <!-- Product Category -->
-                                        <div class="col-xxxl-5 col-xl-6">
+                                        <div class="col-xxxl-5 col-xl-7">
                                             <div
                                                 class="card @if ($errors->has('category_ids') || $errors->has('category_id')) border border-danger @endif">
                                                 <div class="card-header">
