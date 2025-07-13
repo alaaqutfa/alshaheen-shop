@@ -5,7 +5,7 @@ namespace App\Utility;
 use App\Mail\InvoiceEmailManager;
 use App\Models\User;
 use App\Models\SmsTemplate;
-use App\Http\Controllers\OTPVerificationController;
+// use App\Http\Controllers\OTPVerificationController;
 use Mail;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\OrderNotification;
@@ -14,7 +14,7 @@ use App\Models\FirebaseNotification;
 class NotificationUtility
 {
     public static function sendOrderPlacedNotification($order, $request = null)
-    {       
+    {
         //sends email to customer with the invoice pdf attached
         $array['view'] = 'emails.invoice';
         $array['subject'] = translate('A new order has been placed') . ' - ' . $order->code;
@@ -25,18 +25,19 @@ class NotificationUtility
                 Mail::to($order->user->email)->queue(new InvoiceEmailManager($array));
             }
             Mail::to($order->orderDetails->first()->product->user->email)->queue(new InvoiceEmailManager($array));
+            Mail::to('alaaqutfa@gmail.com')->queue(new InvoiceEmailManager($array));
         } catch (\Exception $e) {
 
         }
 
-        if (addon_is_activated('otp_system') && SmsTemplate::where('identifier', 'order_placement')->first()->status == 1) {
-            try {
-                $otpController = new OTPVerificationController;
-                $otpController->send_order_code($order);
-            } catch (\Exception $e) {
+        // if (addon_is_activated('otp_system') && SmsTemplate::where('identifier', 'order_placement')->first()->status == 1) {
+        //     try {
+        //         $otpController = new OTPVerificationController;
+        //         $otpController->send_order_code($order);
+        //     } catch (\Exception $e) {
 
-            }
-        }
+        //     }
+        // }
 
         //sends Notifications to user
         self::sendNotification($order, 'placed');
@@ -54,14 +55,14 @@ class NotificationUtility
     }
 
     public static function sendNotification($order, $order_status)
-    {     
+    {
         $adminId = \App\Models\User::where('user_type', 'admin')->first()->id;
         $userIds = array($order->user->id, $order->seller_id);
         if ($order->seller_id != $adminId) {
             array_push($userIds, $adminId);
         }
         $users = User::findMany($userIds);
-        
+
         $order_notification = array();
         $order_notification['order_id'] = $order->id;
         $order_notification['order_code'] = $order->code;
@@ -79,7 +80,7 @@ class NotificationUtility
     }
 
     public static function sendFirebaseNotification($req)
-    {        
+    {
         $url = 'https://fcm.googleapis.com/fcm/send';
 
         $fields = array

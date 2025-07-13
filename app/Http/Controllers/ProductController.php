@@ -220,7 +220,7 @@ class ProductController extends Controller
         //VAT & Tax
         if ($request->tax_id) {
             $this->productTaxService->store($request->only([
-                'tax_id', 'tax', 'tax_type', 'product_id',
+                'tax_id', 'tax_value', 'tax_types', 'product_id',
             ]));
         }
 
@@ -350,7 +350,7 @@ class ProductController extends Controller
         if ($request->tax_id) {
             $product->taxes()->delete();
             $this->productTaxService->store($request->only([
-                'tax_id', 'tax', 'tax_type', 'product_id',
+                'tax_id', 'tax_value', 'tax_types', 'product_id',
             ]));
         }
 

@@ -4,7 +4,7 @@
 
 namespace App\Http\Controllers\Api\V2;
 
-use App\Http\Controllers\OTPVerificationController;
+// use App\Http\Controllers\OTPVerificationController;
 use App\Mail\GuestAccountOpeningMailManager;
 use App\Models\Address;
 use App\Models\BusinessSetting;

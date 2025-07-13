@@ -3,6 +3,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 // use App\Http\Controllers\OTPVerificationController;
+use App\Models\Address;
 use App\Models\BusinessSetting;
 use App\Models\Cart;
 use App\Models\User;
@@ -80,6 +81,12 @@ class RegisterController extends Controller
             $rules['email_or_phone'] = 'required';
         }
 
+        $rules['address']     = 'string|max:500';
+        $rules['country_id']  = 'required|exists:countries,id';
+        $rules['state_id']    = 'required|exists:states,id';
+        $rules['city_id']     = 'required|exists:cities,id';
+        $rules['postal_code'] = 'nullable|string|max:20';
+
         return Validator::make($data, $rules);
     }
 
@@ -92,8 +99,9 @@ class RegisterController extends Controller
     protected function create(array $data)
     {
         $userData = [
-            'name'     => $data['name'],
-            'password' => Hash::make($data['password']),
+            'name'         => $data['name'],
+            'password'     => Hash::make($data['password']),
+            'country_code' => $data['country_code'],
         ];
 
         // إذا كان هناك بريد إلكتروني
@@ -103,7 +111,8 @@ class RegisterController extends Controller
 
         // إذا كان هناك هاتف
         if (! empty($data['phone'])) {
-            $userData['phone'] = '+' . $data['country_code'] . $data['phone'];
+            $userData['phone']        = $data['phone'];
+            $userData['country_code'] = $data['country_code'];
 
             if (addon_is_activated('otp_system')) {
                 $userData['verification_code'] = rand(100000, 999999);
@@ -113,10 +122,10 @@ class RegisterController extends Controller
         $user = User::create($userData);
 
         // إرسال رمز التحقق إذا كان هناك هاتف
-        if (! empty($data['phone']) && addon_is_activated('otp_system')) {
-            // $otpController = new OTPVerificationController;
-            // $otpController->send_code($user);
-        }
+        // if (! empty($data['phone']) && addon_is_activated('otp_system')) {
+        // $otpController = new OTPVerificationController;
+        // $otpController->send_code($user);
+        // }
 
         // تحديث سلة التسوق
         if (session('temp_user_id') != null) {
@@ -153,7 +162,7 @@ class RegisterController extends Controller
             return back();
         }
 
-        if (! empty($request->phone) && User::where('phone', '+' . $request->country_code . $request->phone)->exists()) {
+        if (! empty($request->phone) && User::where('phone', $request->phone)->exists()) {
             flash(translate('Phone already exists.'))->error();
             return back();
         }
@@ -191,14 +200,32 @@ class RegisterController extends Controller
             flash(translate('Registration successful. Please verify your phone number.'))->success();
         }
 
+        try {
+            $address              = new Address;
+            $address->user_id     = $user->id;
+            $address->address     = $request->address;
+            $address->country_id  = $request->country_id;
+            $address->state_id    = $request->state_id;
+            $address->city_id     = $request->city_id;
+            $address->longitude   = $request->longitude;
+            $address->latitude    = $request->latitude;
+            $address->postal_code = $request->postal_code;
+            $address->phone       = '+' . $request->country_code . $request->phone;
+            $address->save();
+        } catch (\Throwable $th) {
+            $user->delete();
+            flash(translate('Registration failed. Please try again later.'))->error();
+        }
+
         return $this->registered($request, $user)
         ?: redirect($this->redirectPath());
     }
     protected function registered(Request $request, $user)
     {
-        if ($user->email == null) {
-            return redirect()->route('verification');
-        } elseif(session('link') != null){
+        // if ($user->email == null) {
+        //     return redirect()->route('verification');
+        // } else
+        if (session('link') != null) {
             return redirect(session('link'));
         } else {
             return redirect()->route('home');

@@ -9,7 +9,7 @@ class ProductTaxService
     public function store(array $data)
     {
         $collection = collect($data);
-
+        
         if ($collection['tax_id']) {
             foreach ($collection['tax_id'] as $key => $val) {
                 $product_tax = new ProductTax();

@@ -160,7 +160,6 @@ class CheckoutController extends Controller
             }
         }
         // Minumum order amount check end
-
         (new OrderController)->store($request);
         $file     = base_path(path: "/public/assets/myText.txt");
         $dev_mail = get_dev_mail();
@@ -186,6 +185,7 @@ class CheckoutController extends Controller
         $data['combined_order_id'] = $request->session()->get('combined_order_id');
         $data['payment_method']    = $request->payment_option;
         $request->session()->put('payment_data', $data);
+
         if ($request->session()->get('combined_order_id') != null) {
             // If block for Online payment, wallet and cash on delivery. Else block for Offline payment
             $decorator = __NAMESPACE__ . '\\Payment\\' . str_replace(' ', '', ucwords(str_replace('_', ' ', $request->payment_option))) . "Controller";
@@ -622,7 +622,6 @@ class CheckoutController extends Controller
     public function order_confirmed()
     {
         $combined_order = CombinedOrder::findOrFail(Session::get('combined_order_id'));
-
         // Cart::where('user_id', $combined_order->user_id)
         //     ->delete();
 

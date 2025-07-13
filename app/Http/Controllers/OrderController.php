@@ -252,7 +252,7 @@ class OrderController extends Controller
                 if ($cartItem['shipping_type'] == 'carrier') {
                     $order->carrier_id = $cartItem['carrier_id'];
                 }
-
+                
                 if ($product->added_by == 'seller' && $product->user->seller != null) {
                     $seller = $product->user->seller;
                     $seller->num_of_sale += $cartItem['quantity'];

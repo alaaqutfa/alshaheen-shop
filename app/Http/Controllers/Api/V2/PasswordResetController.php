@@ -8,7 +8,7 @@ use App\Models\User;
 use App\Models\PasswordReset;
 use App\Notifications\PasswordResetRequest;
 use Illuminate\Support\Str;
-use App\Http\Controllers\OTPVerificationController;
+// use App\Http\Controllers\OTPVerificationController;
 
 use Hash;
 
@@ -33,17 +33,15 @@ class PasswordResetController extends Controller
         if ($user) {
             $user->verification_code = rand(100000, 999999);
             $user->save();
-            if ($request->send_code_by == 'phone') {
-
-                $otpController = new OTPVerificationController();
-                $otpController->send_code($user);
-            } else {
+            // if ($request->send_code_by == 'phone') {
+                // $otpController = new OTPVerificationController();
+                // $otpController->send_code($user);
+            // } else {
                 try {
-
                     $user->notify(new AppEmailVerificationNotification());
                 } catch (\Exception $e) {
                 }
-            }
+            // }
         }
 
         return response()->json([

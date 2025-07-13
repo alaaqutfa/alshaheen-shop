@@ -1,6 +1,6 @@
 <script src="{{ static_asset('assets/js/vendors.js') }}"></script>
 <script>
-    (function ($) {
+    (function($) {
         // USE STRICT
         "use strict";
 
@@ -10,36 +10,32 @@
             fileBaseUrl: $('meta[name="file-base-url"]').attr("content"),
         };
         AIZ.plugins = {
-            notify: function (type = "dark", message = "") {
-                $.notify(
-                    {
-                        // options
-                        message: message,
+            notify: function(type = "dark", message = "") {
+                $.notify({
+                    // options
+                    message: message,
+                }, {
+                    // settings
+                    showProgressbar: true,
+                    delay: 2500,
+                    mouse_over: "pause",
+                    placement: {
+                        from: "bottom",
+                        align: "left",
                     },
-                    {
-                        // settings
-                        showProgressbar: true,
-                        delay: 2500,
-                        mouse_over: "pause",
-                        placement: {
-                            from: "bottom",
-                            align: "left",
-                        },
-                        animate: {
-                            enter: "animated fadeInUp",
-                            exit: "animated fadeOutDown",
-                        },
-                        type: type,
-                        template:
-                            '<div data-notify="container" class="aiz-notify alert alert-{0}" role="alert">' +
-                            '<button type="button" aria-hidden="true" data-notify="dismiss" class="close"><i class="las la-times"></i></button>' +
-                            '<span data-notify="message">{2}</span>' +
-                            '<div class="progress" data-notify="progressbar">' +
-                            '<div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div>' +
-                            "</div>" +
-                            "</div>",
-                    }
-                );
+                    animate: {
+                        enter: "animated fadeInUp",
+                        exit: "animated fadeOutDown",
+                    },
+                    type: type,
+                    template: '<div data-notify="container" class="aiz-notify alert alert-{0}" role="alert">' +
+                        '<button type="button" aria-hidden="true" data-notify="dismiss" class="close"><i class="las la-times"></i></button>' +
+                        '<span data-notify="message">{2}</span>' +
+                        '<div class="progress" data-notify="progressbar">' +
+                        '<div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div>' +
+                        "</div>" +
+                        "</div>",
+                });
             }
         };
 
@@ -50,7 +46,7 @@
         AIZ.plugins.notify('{{ $message['level'] }}', '{{ $message['message'] }}');
     @endforeach
 
-    $('.password-toggle').click(function(){
+    $('.password-toggle').click(function() {
         var $this = $(this);
         if ($this.siblings('input').attr('type') == 'password') {
             $this.siblings('input').attr('type', 'text');
@@ -66,6 +62,7 @@
     <script type="text/javascript">
         // Country Code
         var isPhoneShown = true,
+            isBothShown = false,
             countryData = window.intlTelInputGlobals.getCountryData(),
             input = document.querySelector("#phone-code");
 
@@ -99,18 +96,51 @@
         });
 
         function toggleEmailPhone(el) {
-            if (isPhoneShown) {
-                $('.phone-form-group').addClass('d-none');
-                $('.email-form-group').removeClass('d-none');
-                $('input[name=phone]').val(null);
-                isPhoneShown = false;
-                $(el).html('*{{ translate('Use Phone Number Instead') }}');
-            } else {
+            if (isBothShown) {
+                $('.toggleBothEmailPhoneBtn').removeClass('d-none');
                 $('.phone-form-group').removeClass('d-none');
                 $('.email-form-group').addClass('d-none');
                 $('input[name=email]').val(null);
+                $('input[name=phone]').val(null);
                 isPhoneShown = true;
-                $(el).html('<i>*{{ translate('Use Email Instead') }}</i>');
+                isBothShown = false;
+                $('.toggleEmailPhoneBtn').html('*{{ translate('Use Email Instead') }}');
+            } else {
+                if (isPhoneShown) {
+                    $('.phone-form-group').addClass('d-none');
+                    $('.email-form-group').removeClass('d-none');
+                    $('input[name=phone]').val(null);
+                    isPhoneShown = false;
+                    $(el).html('*{{ translate('Use Phone Number Instead') }}');
+                } else {
+                    $('.phone-form-group').removeClass('d-none');
+                    $('.email-form-group').addClass('d-none');
+                    $('input[name=email]').val(null);
+                    isPhoneShown = true;
+                    $(el).html('<i>*{{ translate('Use Email Instead') }}</i>');
+                }
+            }
+        }
+
+        function toggleBothEmailPhone(el) {
+            if (isBothShown) {
+                $('.toggleBothEmailPhoneBtn').removeClass('d-none');
+                $('.phone-form-group').removeClass('d-none');
+                $('.email-form-group').addClass('d-none');
+                $('input[name=email]').val(null);
+                $('input[name=phone]').val(null);
+                isPhoneShown = true;
+                isBothShown = false;
+                $('.toggleEmailPhoneBtn').html('*{{ translate('Use Email Instead') }}');
+            } else {
+                $('.toggleBothEmailPhoneBtn').addClass('d-none');
+                isPhoneShown = false;
+                isBothShown = true;
+                $('.phone-form-group').removeClass('d-none');
+                $('.email-form-group').removeClass('d-none');
+                $('input[name=email]').val(null);
+                $('input[name=phone]').val(null);
+                $('.toggleEmailPhoneBtn').html('*{{ translate('Use Phone Number Instead') }}');
             }
         }
     </script>
