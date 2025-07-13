@@ -62,7 +62,7 @@
     });
 </script>
 
-@if (addon_is_activated('otp_system'))
+@if (!addon_is_activated('otp_system'))
     <script type="text/javascript">
         // Country Code
         var isPhoneShown = true,
@@ -113,5 +113,5 @@
                 $(el).html('<i>*{{ translate('Use Email Instead') }}</i>');
             }
         }
-    </script> 
+    </script>
 @endif

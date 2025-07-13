@@ -7,7 +7,7 @@ use Illuminate\Foundation\Auth\VerifiesEmails;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use App\Http\Controllers\OTPVerificationController;
+// use App\Http\Controllers\OTPVerificationController;
 
 class VerificationController extends Controller
 {
@@ -57,9 +57,10 @@ class VerificationController extends Controller
                             : view('auth.'.get_setting('authentication_layout_select').'.verify_email');
         }
         else {
-            $otpController = new OTPVerificationController;
-            $otpController->send_code($request->user());
-            return redirect()->route('verification');
+            // $otpController = new OTPVerificationController;
+            // $otpController->send_code($request->user());
+            // return redirect()->route('verification');
+            return redirect($this->redirectPath());
         }
     }
 

@@ -11,7 +11,7 @@
                         <img src="{{ uploaded_asset(get_setting('customer_register_page_image')) }}" alt="" class="img-fit h-100">
                     </div>
                 </div>
-                
+
                 <!-- Right Side -->
                 <div class="col-xxl-6 col-lg-5">
                     <div class="right-content">
@@ -40,16 +40,16 @@
                                                     </span>
                                                 @endif
                                             </div>
-    
+
                                             <!-- Email or Phone -->
-                                            @if (addon_is_activated('otp_system'))
+                                            @if (!addon_is_activated('otp_system'))
                                                 <div class="form-group phone-form-group mb-1">
                                                     <label for="phone" class="fs-12 fw-700 text-soft-dark">{{  translate('Phone') }}</label>
                                                     <input type="tel" id="phone-code" class="form-control rounded-0{{ $errors->has('phone') ? ' is-invalid' : '' }}" value="{{ old('phone') }}" placeholder="" name="phone" autocomplete="off">
                                                 </div>
-    
+
                                                 <input type="hidden" name="country_code" value="">
-    
+
                                                 <div class="form-group email-form-group mb-1 d-none">
                                                     <label for="email" class="fs-12 fw-700 text-soft-dark">{{  translate('Email') }}</label>
                                                     <input type="email" class="form-control rounded-0 {{ $errors->has('email') ? ' is-invalid' : '' }}" value="{{ old('email') }}" placeholder="{{  translate('Email') }}" name="email"  autocomplete="off">
@@ -59,7 +59,7 @@
                                                         </span>
                                                     @endif
                                                 </div>
-    
+
                                                 <div class="form-group text-right">
                                                     <button class="btn btn-link p-0 text-primary" type="button" onclick="toggleEmailPhone(this)"><i>*{{ translate('Use Email Instead') }}</i></button>
                                                 </div>
@@ -74,7 +74,7 @@
                                                     @endif
                                                 </div>
                                             @endif
-    
+
                                             <!-- password -->
                                             <div class="form-group mb-0">
                                                 <label for="password" class="fs-12 fw-700 text-soft-dark">{{  translate('Password') }}</label>
@@ -91,7 +91,7 @@
                                                     </span>
                                                 @endif
                                             </div>
-    
+
                                             <!-- password Confirm -->
                                             <div class="form-group">
                                                 <label for="password_confirmation" class="fs-12 fw-700 text-soft-dark">{{  translate('Confirm Password') }}</label>
@@ -100,7 +100,7 @@
                                                     <i class="password-toggle las la-2x la-eye"></i>
                                                 </div>
                                             </div>
-    
+
                                             <!-- Recaptcha -->
                                             @if(get_setting('google_recaptcha') == 1)
                                                 <div class="form-group">
@@ -112,7 +112,7 @@
                                                     </span>
                                                 @endif
                                             @endif
-    
+
                                             <!-- Terms and Conditions -->
                                             <div class="mb-3">
                                                 <label class="aiz-checkbox">
@@ -121,13 +121,13 @@
                                                     <span class="aiz-square-check"></span>
                                                 </label>
                                             </div>
-    
+
                                             <!-- Submit Button -->
                                             <div class="mb-4 mt-4">
                                                 <button type="submit" class="btn btn-primary btn-block fw-600 rounded-0">{{  translate('Create Account') }}</button>
                                             </div>
                                         </form>
-                                        
+
                                         <!-- Social Login -->
                                         @if(get_setting('google_login') == 1 || get_setting('facebook_login') == 1 || get_setting('twitter_login') == 1 || get_setting('apple_login') == 1)
                                             <div class="text-center mb-3">
@@ -165,7 +165,7 @@
                                             </ul>
                                         @endif
                                     </div>
-    
+
                                     <!-- Log In -->
                                     <p class="fs-12 text-gray mb-0">
                                         {{ translate('Already have an account?')}}

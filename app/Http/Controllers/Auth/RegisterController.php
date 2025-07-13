@@ -1,28 +1,20 @@
 <?php
-
 namespace App\Http\Controllers\Auth;
 
-use Nexmo;
-use Cookie;
-use Session;
+use App\Http\Controllers\Controller;
+// use App\Http\Controllers\OTPVerificationController;
+use App\Models\BusinessSetting;
 use App\Models\Cart;
 use App\Models\User;
-use Twilio\Rest\Client;
-
 use App\Rules\Recaptcha;
-use Illuminate\Validation\Rule;
-
-use App\Models\Customer;
-use App\OtpConfiguration;
-use Illuminate\Http\Request;
-use App\Models\BusinessSetting;
-use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Hash;
+use Cookie;
 use Illuminate\Auth\Events\Registered;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
-use App\Http\Controllers\OTPVerificationController;
-use App\Notifications\EmailVerificationNotification;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
+use Session;
 
 class RegisterController extends Controller
 {
@@ -64,13 +56,31 @@ class RegisterController extends Controller
      */
     protected function validator(array $data)
     {
-        return Validator::make($data, [
-            'name' => 'required|string|max:255',
-            'password' => 'required|string|min:6|confirmed',
+        $rules = [
+            'name'                 => 'required|string|max:255',
+            'password'             => 'required|string|min:6|confirmed',
             'g-recaptcha-response' => [
-                Rule::when(get_setting('google_recaptcha') == 1, ['required', new Recaptcha()], ['sometimes'])
-            ]
-        ]);
+                Rule::when(get_setting('google_recaptcha') == 1, ['required', new Recaptcha()], ['sometimes']),
+            ],
+        ];
+
+        // إذا كان هناك بريد إلكتروني أو هاتف
+        if (! empty($data['email']) || ! empty($data['phone'])) {
+            $rules['email'] = 'nullable|email|max:255|unique:users';
+            $rules['phone'] = [
+                'nullable',
+                Rule::requiredIf(empty($data['email'])),
+                'unique:users,phone,NULL,id,country_code,' . $data['country_code'],
+            ];
+            $rules['country_code'] = [
+                Rule::requiredIf(! empty($data['phone'])),
+            ];
+        } else {
+            // إذا لم يتم إدخال أي منهما
+            $rules['email_or_phone'] = 'required';
+        }
+
+        return Validator::make($data, $rules);
     }
 
     /**
@@ -81,47 +91,52 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        if (filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
-            $user = User::create([
-                'name' => $data['name'],
-                'email' => $data['email'],
-                'password' => Hash::make($data['password']),
-            ]);
-        }
-        else {
-            if (addon_is_activated('otp_system')){
-                $user = User::create([
-                    'name' => $data['name'],
-                    'phone' => '+'.$data['country_code'].$data['phone'],
-                    'password' => Hash::make($data['password']),
-                    'verification_code' => rand(100000, 999999)
-                ]);
+        $userData = [
+            'name'     => $data['name'],
+            'password' => Hash::make($data['password']),
+        ];
 
-                $otpController = new OTPVerificationController;
-                $otpController->send_code($user);
+        // إذا كان هناك بريد إلكتروني
+        if (! empty($data['email']) && filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+            $userData['email'] = $data['email'];
+        }
+
+        // إذا كان هناك هاتف
+        if (! empty($data['phone'])) {
+            $userData['phone'] = '+' . $data['country_code'] . $data['phone'];
+
+            if (addon_is_activated('otp_system')) {
+                $userData['verification_code'] = rand(100000, 999999);
             }
         }
-        
-        if(session('temp_user_id') != null){
-            if(auth()->user()->user_type == 'customer'){
+
+        $user = User::create($userData);
+
+        // إرسال رمز التحقق إذا كان هناك هاتف
+        if (! empty($data['phone']) && addon_is_activated('otp_system')) {
+            // $otpController = new OTPVerificationController;
+            // $otpController->send_code($user);
+        }
+
+        // تحديث سلة التسوق
+        if (session('temp_user_id') != null) {
+            if (auth()->user()->user_type == 'customer') {
                 Cart::where('temp_user_id', session('temp_user_id'))
-                ->update(
-                    [
-                        'user_id' => auth()->user()->id,
-                        'temp_user_id' => null
-                    ]
-                );
-            }
-            else {
+                    ->update([
+                        'user_id'      => auth()->user()->id,
+                        'temp_user_id' => null,
+                    ]);
+            } else {
                 Cart::where('temp_user_id', session('temp_user_id'))->delete();
             }
             Session::forget('temp_user_id');
         }
 
-        if(Cookie::has('referral_code')){
-            $referral_code = Cookie::get('referral_code');
+        // إدارة الإحالات
+        if (Cookie::has('referral_code')) {
+            $referral_code    = Cookie::get('referral_code');
             $referred_by_user = User::where('referral_code', $referral_code)->first();
-            if($referred_by_user != null){
+            if ($referred_by_user != null) {
                 $user->referred_by = $referred_by_user->id;
                 $user->save();
             }
@@ -132,14 +147,20 @@ class RegisterController extends Controller
 
     public function register(Request $request)
     {
-        if (filter_var($request->email, FILTER_VALIDATE_EMAIL)) {
-            if(User::where('email', $request->email)->first() != null){
-                flash(translate('Email or Phone already exists.'));
-                return back();
-            }
+        // التحقق من عدم وجود مستخدم بنفس البريد أو الهاتف
+        if (! empty($request->email) && User::where('email', $request->email)->exists()) {
+            flash(translate('Email already exists.'))->error();
+            return back();
         }
-        elseif (User::where('phone', '+'.$request->country_code.$request->phone)->first() != null) {
-            flash(translate('Phone already exists.'));
+
+        if (! empty($request->phone) && User::where('phone', '+' . $request->country_code . $request->phone)->exists()) {
+            flash(translate('Phone already exists.'))->error();
+            return back();
+        }
+
+        // إذا لم يتم إدخال أي من الحقلين
+        if (empty($request->email) && empty($request->phone)) {
+            flash(translate('You must provide either email or phone number.'))->error();
             return back();
         }
 
@@ -149,14 +170,14 @@ class RegisterController extends Controller
 
         $this->guard()->login($user);
 
-        if($user->email != null){
-            if(BusinessSetting::where('type', 'email_verification')->first()->value != 1){
+        // معالجة التحقق من البريد الإلكتروني إذا كان موجودًا
+        if (! empty($user->email)) {
+            if (BusinessSetting::where('type', 'email_verification')->first()->value != 1) {
                 $user->email_verified_at = date('Y-m-d H:m:s');
                 $user->save();
                 offerUserWelcomeCoupon();
                 flash(translate('Registration successful.'))->success();
-            }
-            else {
+            } else {
                 try {
                     $user->sendEmailVerificationNotification();
                     flash(translate('Registration successful. Please verify your email.'))->success();
@@ -165,19 +186,21 @@ class RegisterController extends Controller
                     flash(translate('Registration failed. Please try again later.'))->error();
                 }
             }
+        } else {
+            // إذا كان التسجيل بالهاتف فقط
+            flash(translate('Registration successful. Please verify your phone number.'))->success();
         }
 
         return $this->registered($request, $user)
-            ?: redirect($this->redirectPath());
+        ?: redirect($this->redirectPath());
     }
-
     protected function registered(Request $request, $user)
     {
         if ($user->email == null) {
             return redirect()->route('verification');
-        }elseif(session('link') != null){
+        } elseif(session('link') != null){
             return redirect(session('link'));
-        }else {
+        } else {
             return redirect()->route('home');
         }
     }
