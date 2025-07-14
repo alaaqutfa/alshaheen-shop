@@ -37,7 +37,7 @@
                     @csrf
                     <input type="hidden" name="added_by" value="seller">
                     @foreach ($categories as $category)
-                        @php($tax_category = $category->id)
+                        {{-- @php($tax_category = $category->id) --}}
                         <input type="hidden" name="category_id" value="{{ $category->id }}" />
                     @endforeach
                     <input type="hidden" name="digital" value="1">
@@ -233,7 +233,8 @@
                     </div>
                 </div>
                 <!-- VAT & Tax -->
-                @foreach (\App\Models\Tax::where('tax_status', 1)->where('type', 'digital')->where('tax_category', $tax_category)->get() as $tax)
+                @foreach (\App\Models\Tax::where('tax_status', 1)->where('type', 'digital')->get() as $tax)
+                    {{-- ->where('tax_category', $tax_category) --}}
                     <div class="tax_{{ $tax->id }}">
                         <input type="hidden" name="tax_name" value="{{ $tax->name }}">
                         <input type="hidden" name="type" value="{{ $tax->type }}">
