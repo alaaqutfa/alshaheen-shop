@@ -35,10 +35,10 @@
                 <div class="col-lg-12">
                     @csrf
                     <input type="hidden" name="added_by" value="seller">
-                    @foreach ($categories as $category)
+                    {{-- @foreach ($categories as $category) --}}
                         {{-- @php($tax_category = $category->id) --}}
-                        <input type="hidden" name="category_id" value="{{ $category->id }}" />
-                    @endforeach
+                        {{-- <input type="hidden" name="category_id" value="{{ $category->id }}" /> --}}
+                    {{-- @endforeach --}}
                     <!-- General -->
                     <div class="card">
                         <div class="card-header">
@@ -57,7 +57,8 @@
                             <!-- Categories -->
                             <div class="Categories">
                                 <?php
-                                $hasSubCategories = false;
+                                // $hasSubCategories = false;
+                                $hasSubCategories = true;
                                 ?>
                                 @foreach ($categories as $category)
                                     @if ($category->childrenCategories->isNotEmpty())
@@ -73,12 +74,31 @@
                                             {{ translate('Product Category') }}
                                             <span class="text-danger">*</span>
                                         </label>
-                                        <div class="col-md-8">
-                                            @foreach ($categories as $category)
+                                        <div id="categories-body" class="col-md-8">
+                                            {{-- @foreach ($categories as $category)
                                                 @foreach ($category->childrenCategories as $childCategory)
                                                     @include('backend.product.products.child_category', [
                                                         'child_category' => $childCategory,
                                                         'parent_category' => $category->id,
+                                                    ])
+                                                @endforeach
+                                            @endforeach --}}
+                                            @foreach ($categories as $category)
+                                                @if ($category->parent_id == 0)
+                                                    <div
+                                                        class="input-group w-100 d-flex justify-content-between align-items-center">
+                                                        <label for="category_id_{{ $category->id }}" class="mb-0">
+                                                            {{ $category->getTranslation('name') }}
+                                                        </label>
+                                                        <input type="radio" name="category_id"
+                                                            id="category_id_{{ $category->id }}"
+                                                            value="{{ $category->id }}" />
+                                                    </div>
+                                                @endif
+                                                @foreach ($category->childrenCategories as $childCategory)
+                                                    @include('backend.product.products.child_category', [
+                                                        'parent_category' => $category->id,
+                                                        'child_category' => $childCategory,
                                                     ])
                                                 @endforeach
                                             @endforeach
@@ -554,18 +574,28 @@
 
 @section('script')
     <!-- Treeview js -->
-    <script src="{{ static_asset('assets/js/hummingbird-treeview.js') }}"></script>
 
     <script type="text/javascript">
         $(document).ready(function() {
-            $("#treeview").hummingbird();
-
-            $('#treeview input:checkbox').on("click", function() {
+            var main_id = '{{ old('category_id') }}';
+            var selected_ids = [];
+            @if (old('category_ids'))
+                selected_ids = @json(old('category_ids'));
+                console.log(selected_ids);
+            @endif
+            for (let i = 0; i < selected_ids.length; i++) {
+                const element = selected_ids[i];
+                $('#categories-body input:checkbox#' + element).prop('checked', true);
+            }
+            if (main_id) {
+                $('input:radio[value=' + main_id + ']').prop('checked', true);
+            }
+            $('.childCategory').slideUp();
+            $('input:radio[name="category_id"]').on("change", function() {
+                $('.childCategory').slideUp();
+                $('.childCategory input:checkbox').prop('checked', false);
                 let $this = $(this);
-                if ($this.prop('checked') && ($('#treeview input:radio:checked').length == 0)) {
-                    let val = $this.val();
-                    $('#treeview input:radio[value=' + val + ']').prop('checked', true);
-                }
+                $('.parent_category_' + $this.val()).slideDown();
             });
         });
 
@@ -593,22 +623,24 @@
                 },
                 success: function(data) {
                     var obj = JSON.parse(data);
-                    $('#customer_choice_options').append('\
-                                                            <div class="form-group row">\
-                                                                <div class="col-md-3">\
-                                                                    <input type="hidden" name="choice_no[]" value="' + i +
+                    $('#customer_choice_options').append(
+                        '\
+                                                                    <div class="form-group row">\
+                                                                        <div class="col-md-3">\
+                                                                            <input type="hidden" name="choice_no[]" value="' +
+                        i +
                         '">\
-                                                                    <input type="text" class="form-control" name="choice[]" value="' +
+                                                                            <input type="text" class="form-control" name="choice[]" value="' +
                         name +
                         '" placeholder="{{ translate('Choice Title') }}" readonly>\
-                                                                </div>\
-                                                                <div class="col-md-8">\
-                                                                    <select class="form-control aiz-selectpicker attribute_choice" data-live-search="true" name="choice_options_' +
+                                                                        </div>\
+                                                                        <div class="col-md-8">\
+                                                                            <select class="form-control aiz-selectpicker attribute_choice" data-live-search="true" name="choice_options_' +
                         i + '[]" multiple>\
-                                                                        ' + obj + '\
-                                                                    </select>\
-                                                                </div>\
-                                                            </div>');
+                                                                                ' + obj + '\
+                                                                            </select>\
+                                                                        </div>\
+                                                                    </div>');
                     AIZ.plugins.bootstrapSelect('refresh');
                 }
             });

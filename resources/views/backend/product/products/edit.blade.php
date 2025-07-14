@@ -1133,7 +1133,6 @@
                 }
             }
             $('#categories-body input:radio[value=' + main_id + ']').prop('checked', true);
-            fq_bought_product_selection_type();
             $('.childCategory').slideUp();
             $('.parent_category_' + main_id).slideDown();
             $('input:radio[name="category_id"]').on("change", function() {
@@ -1142,6 +1141,7 @@
                 let $this = $(this);
                 $('.parent_category_' + $this.val()).slideDown();
             });
+            fq_bought_product_selection_type();
         });
 
 

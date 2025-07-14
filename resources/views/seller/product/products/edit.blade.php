@@ -30,7 +30,7 @@
                 <input type="hidden" name="lang" value="{{ $lang }}">
                 <input type="hidden" name="id" value="{{ $product->id }}">
                 <input type="hidden" name="slug" value="{{ $product->slug }}">
-                <input type="hidden" name="category_id" value="{{ $product->category_id }}" />
+                {{-- <input type="hidden" name="category_id" value="{{ $product->category_id }}" /> --}}
                 <input type="hidden" name="added_by" value="seller">
                 <!-- General -->
                 <div class="card">
@@ -61,7 +61,7 @@
                         <!-- Categories -->
                         <div class="Categories">
                             @php
-                                $hasSubCategories = false;
+                                $hasSubCategories = true;
                                 $old_categories = $product->categories()->pluck('category_id')->toArray();
                             @endphp
                             @foreach ($categories as $category)
@@ -82,10 +82,29 @@
                                         {{ translate('Product Category') }}
                                         <span class="text-danger">*</span>
                                     </label>
-                                    <div class="col-md-8">
-                                        @foreach ($categories as $category)
+                                    <div id="categories-body" class="col-md-8">
+                                        {{-- @foreach ($categories as $category)
                                             @foreach ($category->childrenCategories as $childCategory)
                                                 @include('backend.product.products.child_category', [
+                                                    'child_category' => $childCategory,
+                                                ])
+                                            @endforeach
+                                        @endforeach --}}
+                                        @foreach ($categories as $category)
+                                            @if ($category->parent_id == 0)
+                                                <div
+                                                    class="input-group w-100 d-flex justify-content-between align-items-center">
+                                                    <label for="category_id_{{ $category->id }}" class="mb-0">
+                                                        {{ $category->getTranslation('name') }}
+                                                    </label>
+                                                    <input type="radio" name="category_id"
+                                                        id="category_id_{{ $category->id }}"
+                                                        value="{{ $category->id }}" />
+                                                </div>
+                                            @endif
+                                            @foreach ($category->childrenCategories as $childCategory)
+                                                @include('backend.product.products.child_category', [
+                                                    'parent_category' => $category->id,
                                                     'child_category' => $childCategory,
                                                 ])
                                             @endforeach
@@ -304,7 +323,8 @@
                     </div>
                 </div>
                 <!-- VAT & Tax -->
-                @foreach (\App\Models\Tax::where('tax_status', 1)->where('type', 'physical')->where('tax_category', $product->category_id)->get() as $tax)
+                @foreach (\App\Models\Tax::where('tax_status', 1)->where('type', 'physical')->get() as $tax)
+                    {{-- ->where('tax_category', $product->category_id) --}}
                     <div class="tax_{{ $tax->id }}">
                         <input type="hidden" name="tax_name" value="{{ $tax->name }}">
                         <input type="hidden" name="type" value="{{ $tax->type }}">
@@ -374,21 +394,24 @@
     <script type="text/javascript">
         $(document).ready(function() {
             show_hide_shipping_div();
-
-            $("#treeview").hummingbird();
             var main_id = '{{ $product->category_id != null ? $product->category_id : 0 }}';
             var selected_ids = '{{ implode(',', $old_categories) }}';
             if (selected_ids != '') {
                 const myArray = selected_ids.split(",");
                 for (let i = 0; i < myArray.length; i++) {
                     const element = myArray[i];
-                    $('#treeview input:checkbox#' + element).prop('checked', true);
-                    $('#treeview input:checkbox#' + element).parents("ul").css("display", "block");
-                    $('#treeview input:checkbox#' + element).parents("li").children('.las').removeClass("la-plus")
-                        .addClass('la-minus');
+                    $('#categories-body input:checkbox#' + element).prop('checked', true);
                 }
             }
-            $('#treeview input:radio[value=' + main_id + ']').prop('checked', true);
+            $('#categories-body input:radio[value=' + main_id + ']').prop('checked', true);
+            $('.childCategory').slideUp();
+            $('.parent_category_' + main_id).slideDown();
+            $('input:radio[name="category_id"]').on("change", function() {
+                $('.childCategory').slideUp();
+                $('.childCategory input:checkbox').prop('checked', false);
+                let $this = $(this);
+                $('.parent_category_' + $this.val()).slideDown();
+            });
             fq_bought_product_selection_type();
         });
 
@@ -420,19 +443,19 @@
                 success: function(data) {
                     var obj = JSON.parse(data);
                     $('#customer_choice_options').append('\
-                            <div class="form-group row">\
-                                <div class="col-md-3">\
-                                    <input type="hidden" name="choice_no[]" value="' + i + '">\
-                                    <input type="text" class="form-control" name="choice[]" value="' + name +
+                                    <div class="form-group row">\
+                                        <div class="col-md-3">\
+                                            <input type="hidden" name="choice_no[]" value="' + i + '">\
+                                            <input type="text" class="form-control" name="choice[]" value="' + name +
                         '" placeholder="{{ translate('Choice Title') }}" readonly>\
-                                </div>\
-                                <div class="col-md-8">\
-                                    <select class="form-control aiz-selectpicker attribute_choice" data-live-search="true" name="choice_options_' +
+                                        </div>\
+                                        <div class="col-md-8">\
+                                            <select class="form-control aiz-selectpicker attribute_choice" data-live-search="true" name="choice_options_' +
                         i + '[]" multiple>\
-                                        ' + obj + '\
-                                    </select>\
-                                </div>\
-                            </div>');
+                                                ' + obj + '\
+                                            </select>\
+                                        </div>\
+                                    </div>');
                     AIZ.plugins.bootstrapSelect('refresh');
                 }
             });

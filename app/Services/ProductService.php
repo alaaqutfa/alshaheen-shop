@@ -28,7 +28,7 @@ class ProductService
             $user_id = User::where('user_type', 'admin')->first()->id;
         }
         $tags = array();
-        if ($collection['tags'][0] != null) {
+        if (isset($collection['tags']) && $collection['tags'][0] != null) {
             foreach (json_decode($collection['tags'][0]) as $key => $tag) {
                 array_push($tags, $tag->value);
             }
@@ -193,7 +193,7 @@ class ProductService
 
 
         $tags = array();
-        if ($collection['tags'][0] != null) {
+        if (isset($collection['tags']) && $collection['tags'][0] != null) {
             foreach (json_decode($collection['tags'][0]) as $key => $tag) {
                 array_push($tags, $tag->value);
             }
