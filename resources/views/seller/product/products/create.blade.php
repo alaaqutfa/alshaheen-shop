@@ -93,6 +93,7 @@
                                                         <input type="radio" name="category_id"
                                                             id="category_id_{{ $category->id }}"
                                                             value="{{ $category->id }}" />
+                                                        <input type="hidden" name="category_ids[]" id="category_ids_{{ $category->id }}" value="{{ $category->id }}" />
                                                     </div>
                                                 @endif
                                                 @foreach ($category->childrenCategories as $childCategory)

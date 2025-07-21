@@ -7,6 +7,7 @@ use App\Models\Search;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\Brand;
+use App\Models\Seller;
 use App\Models\Color;
 use App\Models\Shop;
 use App\Models\Attribute;
@@ -53,12 +54,11 @@ class SearchController extends Controller
             $conditions = array_merge($conditions, ['brand_id' => $brand_id]);
         }
 
-        // if ($seller_id != null) {
-        //     $conditions = array_merge($conditions, ['user_id' => Seller::findOrFail($seller_id)->user->id]);
-        // }
+        if ($seller_id != null) {
+            $conditions = array_merge($conditions, ['user_id' => Seller::findOrFail($seller_id)->user->id]);
+        }
 
         $products = Product::where($conditions);
-
         if ($category_id != null) {
             $category_ids = CategoryUtility::children_ids($category_id);
             $category_ids[] = $category_id;
@@ -70,19 +70,19 @@ class SearchController extends Controller
             $attributes = Attribute::whereIn('id', $attribute_ids)->get();
         } else {
             $categories = Category::with('childrenCategories', 'coverImage')->where('level', 0)->orderBy('order_level', 'desc')->get();
-            // if ($query != null) {
-            //     foreach (explode(' ', trim($query)) as $word) {
-            //         $ids = Category::where('name', 'like', '%'.$word.'%')->pluck('id')->toArray();
-            //         if (count($ids) > 0) {
-            //             foreach ($ids as $id) {
-            //                 $category_ids[] = $id;
-            //                 array_merge($category_ids, CategoryUtility::children_ids($id));
-            //             }
-            //         }
-            //     }
-            //     $attribute_ids = AttributeCategory::whereIn('category_id', $category_ids)->pluck('attribute_id')->toArray();
-            //     $attributes = Attribute::whereIn('id', $attribute_ids)->get();
-            // }
+            if ($query != null) {
+                foreach (explode(' ', trim($query)) as $word) {
+                    $ids = Category::where('name', 'like', '%'.$word.'%')->pluck('id')->toArray();
+                    if (count($ids) > 0) {
+                        foreach ($ids as $id) {
+                            $category_ids[] = $id;
+                            array_merge($category_ids, CategoryUtility::children_ids($id));
+                        }
+                    }
+                }
+                $attribute_ids = AttributeCategory::whereIn('category_id', $category_ids)->pluck('attribute_id')->toArray();
+                $attributes = Attribute::whereIn('id', $attribute_ids)->get();
+            }
         }
 
         if ($min_price != null && $max_price != null) {
@@ -152,7 +152,7 @@ class SearchController extends Controller
         }
 
         $products = filter_products($products)->with('taxes')->paginate(24)->appends(request()->query());
-
+        
         return view('frontend.product_listing', compact('products', 'query', 'category', 'categories', 'category_id', 'brand_id', 'sort_by', 'seller_id', 'min_price', 'max_price', 'attributes', 'selected_attribute_values', 'colors', 'selected_color'));
     }
 
