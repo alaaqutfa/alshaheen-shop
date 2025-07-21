@@ -95,6 +95,7 @@
                                                 <div
                                                     class="input-group w-100 d-flex justify-content-between align-items-center">
                                                     <label for="category_id_{{ $category->id }}" class="mb-0">
+                                                        <input type="checkbox" name="category_ids[]" id="category_ids_{{ $category->id }}" value="{{ $category->id }}" />
                                                         {{ $category->getTranslation('name') }}
                                                     </label>
                                                     <input type="radio" name="category_id"
