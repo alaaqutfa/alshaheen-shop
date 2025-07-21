@@ -256,7 +256,9 @@
                                                                     class="input-group w-100 d-flex justify-content-between align-items-center">
                                                                     <label for="category_id_{{ $category->id }}"
                                                                         class="mb-0">
-                                                                        <input type="checkbox" name="category_ids[]" id="category_ids_{{ $category->id }}" value="{{ $category->id }}" />
+                                                                        <input type="checkbox" name="category_ids[]"
+                                                                            id="category_ids_{{ $category->id }}"
+                                                                            value="{{ $category->id }}" />
                                                                         {{ $category->getTranslation('name') }}
                                                                     </label>
                                                                     <input type="radio" name="category_id"
@@ -394,7 +396,8 @@
                                                 </div>
                                                 <div class="form-group col-md-6">
                                                     <input type="text" name="tax_types[]" class="form-control"
-                                                        value="{{ $tax->tax_type == 'amount' ? translate('Flat') : translate('Percent') }}" readonly />
+                                                        value="{{ $tax->tax_type == 'amount' ? translate('Flat') : translate('Percent') }}"
+                                                        readonly />
                                                 </div>
                                             </div>
                                         @endforeach
@@ -1125,12 +1128,12 @@
         $(document).ready(function() {
             show_hide_shipping_div();
             var main_id = '{{ $product->category_id != null ? $product->category_id : 0 }}';
-            var selected_ids = '{{ implode(',', $old_categories) }}';
+            var selected_ids = '{{ implode(",", $old_categories) }}';
             if (selected_ids != '') {
                 const myArray = selected_ids.split(",");
                 for (let i = 0; i < myArray.length; i++) {
                     const element = myArray[i];
-                    $('#categories-body input:checkbox#' + element).prop('checked', true);
+                    $('#categories-body input:checkbox#category_ids_' + element).prop('checked', true);
                 }
             }
             $('#categories-body input:radio[value=' + main_id + ']').prop('checked', true);
@@ -1173,19 +1176,19 @@
                 success: function(data) {
                     var obj = JSON.parse(data);
                     $('#customer_choice_options').append('\
-                                <div class="form-group row">\
-                                    <div class="col-md-3">\
-                                        <input type="hidden" name="choice_no[]" value="' + i + '">\
-                                        <input type="text" class="form-control" name="choice[]" value="' + name +
+                                    <div class="form-group row">\
+                                        <div class="col-md-3">\
+                                            <input type="hidden" name="choice_no[]" value="' + i + '">\
+                                            <input type="text" class="form-control" name="choice[]" value="' + name +
                         '" placeholder="{{ translate('Choice Title') }}" readonly>\
-                                    </div>\
-                                    <div class="col-md-8">\
-                                        <select class="form-control aiz-selectpicker attribute_choice" data-live-search="true" name="choice_options_' +
+                                        </div>\
+                                        <div class="col-md-8">\
+                                            <select class="form-control aiz-selectpicker attribute_choice" data-live-search="true" name="choice_options_' +
                         i + '[]" data-selected-text-format="count" multiple>\
-                                            ' + obj + '\
-                                        </select>\
-                                    </div>\
-                                </div>');
+                                                ' + obj + '\
+                                            </select>\
+                                        </div>\
+                                    </div>');
                     AIZ.plugins.bootstrapSelect('refresh');
                 }
             });

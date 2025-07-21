@@ -397,12 +397,12 @@
         $(document).ready(function() {
             show_hide_shipping_div();
             var main_id = '{{ $product->category_id != null ? $product->category_id : 0 }}';
-            var selected_ids = '{{ implode(',', $old_categories) }}';
+            var selected_ids = '{{ implode(",", $old_categories) }}';
             if (selected_ids != '') {
                 const myArray = selected_ids.split(",");
                 for (let i = 0; i < myArray.length; i++) {
                     const element = myArray[i];
-                    $('#categories-body input:checkbox#' + element).prop('checked', true);
+                    $('#categories-body input:checkbox#category_ids_' + element).prop('checked', true);
                 }
             }
             $('#categories-body input:radio[value=' + main_id + ']').prop('checked', true);

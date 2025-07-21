@@ -966,7 +966,7 @@
             @endif
             for (let i = 0; i < selected_ids.length; i++) {
                 const element = selected_ids[i];
-                $('#categories-body input:checkbox#' + element).prop('checked', true);
+                $('#categories-body input:checkbox#category_ids_' + element).prop('checked', true);
             }
             if (main_id) {
                 $('input:radio[value=' + main_id + ']').prop('checked', true);
