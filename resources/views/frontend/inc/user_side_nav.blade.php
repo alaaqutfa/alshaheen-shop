@@ -31,7 +31,7 @@
             <h4 class="h5 fs-14 mb-1 fw-700 text-dark">{{ $user->name }}</h4>
             <!-- Phone -->
             @if ($user->phone != null)
-                <div class="text-truncate opacity-60 fs-12">{{ $user->phone }}</div>
+                <div class="text-truncate opacity-60 fs-12">{{ '+'.$user->country_code.$user->phone }}</div>
             <!-- Email -->
             @else
                 <div class="text-truncate opacity-60 fs-12">{{ $user->email }}</div>
