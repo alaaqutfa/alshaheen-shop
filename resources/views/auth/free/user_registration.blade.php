@@ -70,8 +70,14 @@
                                                         class="fs-12 fw-700 text-soft-dark">{{ translate('Phone') }}</label>
                                                     <input type="tel" id="phone-code"
                                                         class="form-control rounded-0{{ $errors->has('phone') ? ' is-invalid' : '' }}"
-                                                        value="{{ old('phone') }}" placeholder="" name="phone"
-                                                        autocomplete="off">
+                                                        value="{{ old('phone') }}" placeholder="7X XXX XXXX"
+                                                        name="phone" autocomplete="off" pattern="^7[5798][0-9]{8}$"
+                                                        maxlength="10"
+                                                        title="الرجاء إدخال رقم عراقي صحيح مكون من 10 أرقام يبدأ بـ 7">
+                                                    <div id="phone-error" class="alert alert-danger mt-2 d-none"
+                                                        role="alert">
+                                                        {{ translate('Please enter a valid Iraqi phone number starting with 7 and containing 10 digits.') }}
+                                                    </div>
                                                 </div>
 
                                                 <input type="hidden" name="country_code" value="">
@@ -393,5 +399,37 @@
                 });
             });
         @endif
+
+        function isValidIraqiPhone(phone) {
+            // تحقق من أن الرقم يبدأ بـ 7 ثم 7 أو 8 أو 9 أو 5 ويليه 8 أرقام
+            return /^7[5798][0-9]{8}$/.test(phone);
+        }
+
+        function showPhoneError() {
+            $('#phone-code').addClass('is-invalid');
+            $('#phone-error').removeClass('d-none');
+        }
+
+        function hidePhoneError() {
+            $('#phone-code').removeClass('is-invalid');
+            $('#phone-error').addClass('d-none');
+        }
+
+        // تحقق عند تغيير الإدخال
+        $('#phone-code').on('change', function() {
+            const phone = $(this).val().trim();
+            isValidIraqiPhone(phone) ? hidePhoneError() : showPhoneError();
+        });
+
+        // تحقق عند إرسال النموذج
+        $('#reg-form').on('submit', function(e) {
+            const phone = $('#phone-code').val().trim();
+            if (!isValidIraqiPhone(phone)) {
+                showPhoneError();
+                e.preventDefault(); // منع إرسال الفورم
+            } else {
+                hidePhoneError();
+            }
+        });
     </script>
 @endsection
